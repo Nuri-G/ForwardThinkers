@@ -1,23 +1,54 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+
+const generateDataset = () => (
+  Array(10).fill(0).map(() => ([
+    Math.random() * 80 + 10,
+    Math.random() * 35 + 10,
+    "blue",
+  ]))
+)
+
+class Circles extends React.Component {
+  constructor() {
+    super();
+    this.width = 100;
+    this.height = 50;
+    this.state = {dataset: generateDataset()};
+  }
+
+  setColor(i) {
+    let dataset = this.state.dataset;
+    dataset[i][2] = "red";
+    this.setState({dataset: dataset});
+  }
+
+  render() {
+    let width = this.width;
+    let height = this.height;;
+    return (
+      <svg viewBox="0 0 100 50">
+        <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="black" strokeWidth="0.1" />
+        <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="0.1" />
+        {this.state.dataset.map(([x, y, color], i) => (
+          <circle
+            cx={x}
+            cy={y}
+            key={i}
+            r="3"
+            fill={color}
+            onClick={() => this.setColor(i)}
+          />
+        ))}
+      </svg>
+    );
+  }
+}
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Circles></Circles>
     </div>
   );
 }
