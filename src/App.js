@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react';
 
 const generateDataset = () => (
-  Array(10).fill(0).map(() => ([
+  Array(30).fill(0).map(() => ([
     Math.random() * 80 + 10,
     Math.random() * 35 + 10,
     "blue",
@@ -27,7 +27,7 @@ class Circles extends React.Component {
     let width = this.width;
     let height = this.height;;
     return (
-      <svg viewBox="0 0 100 50">
+      <svg viewBox="0 0 100 50" style={{border: '3px solid black', margin: '5px'}}>
         <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="black" strokeWidth="0.1" />
         <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="0.1" />
         {this.state.dataset.map(([x, y, color], i) => (
@@ -35,7 +35,7 @@ class Circles extends React.Component {
             cx={x}
             cy={y}
             key={i}
-            r="3"
+            r="1"
             fill={color}
             onClick={() => this.setColor(i)}
           />
