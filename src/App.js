@@ -3,8 +3,8 @@ import React from 'react';
 
 const generateDataset = () => (
   Array(30).fill(0).map(() => ([
-    Math.random() * 80 + 10,
-    Math.random() * 35 + 10,
+    Math.random() * 100,
+    Math.random() * 50,
     "blue",
   ]))
 )
