@@ -35,9 +35,9 @@ class Circles extends React.Component {
     createDropdown(axis) {
         if(this.state != null && this.state.data != null) {
             let labels = this.state.data[1];
-            return (
+            return ( //So either this dropdown is for just the y-axis (since we could keep the x-axis as minutes played) or we have two dropdowns
                 <select>
-                    <option key="a" value={-1}>Select the X-Axis</option>
+                    <option key="a" value={-1}>Select the X-Axis</option> 
                     {labels.map((option, i) => {
                         return (
                             <option key={i} value={i}>
@@ -58,15 +58,15 @@ class Circles extends React.Component {
                 if(i < 2) {
                     return null;
                 }
-                let x = 0;
-                let y = 0;
+                let x = 50;
+                let y = 25;
                 let color = "blue";
                 return (
                 <circle
                     cx={x}
                     cy={y}
                     key={i}
-                    r="1"
+                    r=".5" //Maybe should tweak size of circles because of amount of them
                     fill={color}
                     onClick={() => this.setColor(i)}
                 />
@@ -82,9 +82,9 @@ class Circles extends React.Component {
         
         let width = this.width;
         let height = this.height;
-        return (
+        return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
-                {this.createDropdown("x")}
+                {this.createDropdown("x")} 
                 <svg viewBox="0 0 100 50" style={{border: '3px solid black', margin: '5px'}}>
                     <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="black" strokeWidth="0.1" />
                     <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="0.1" />
@@ -92,7 +92,7 @@ class Circles extends React.Component {
                 </svg>
             </div>
             
-        );
+        ); 
     }
 }
 
