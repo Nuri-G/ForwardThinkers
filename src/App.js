@@ -56,6 +56,7 @@ class Circles extends React.Component {
 
                     processedLine[currentCategory][currentSubcategory] = line[i];
                 }
+                processedLine.color = 'blue';
                 processedData.push(processedLine);
             }
 
@@ -65,8 +66,8 @@ class Circles extends React.Component {
 
     setColor(i) {
         let dataset = this.state.data;
-        dataset[i][2] = "red";
-        this.setState(dataset);
+        dataset[i].color = "red";
+        this.setState({...this.state, data: dataset});
     }
 
     createDropdown(axis) {
@@ -97,7 +98,7 @@ class Circles extends React.Component {
                 console.log(coords);
                 let x = coords.x;
                 let y = coords.y;
-                let color = "blue";
+                let color = line.color;
                 return (
                 <circle
                     cx={x}
