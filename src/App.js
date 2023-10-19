@@ -22,7 +22,35 @@ class Circles extends React.Component {
 
     loadDataset(filename) {
         fetchFile(filename).then(text => {
-            this.setState({...this.state, data: Papa.parse(text).data});
+            let data = Papa.parse(text).data;
+            let categories = data[0];
+            data.shift();
+            let subcategories = data[0];
+            data.shift();
+
+            let currentCategory = null;
+            let currentSubcategory = null;
+            let processedData = [];
+
+            for(let line of data) {
+                let processedLine = {};
+
+                for(let i = 0; i < categories.length; i++) {
+                    if(categories[i] !== '') {
+                        currentCategory = categories[i];
+
+                        if(processedLine[currentCategory] == null) {
+                            processedLine[currentCategory] = {};
+                        }
+                    }
+                    currentSubcategory = subcategories[i];
+
+                    processedLine[currentCategory][currentSubcategory] = line[i];
+                }
+                processedData.push(processedLine);
+            }
+
+            this.setState({...this.state, data: processedData});
         })
     }
 
@@ -33,8 +61,8 @@ class Circles extends React.Component {
     }
 
     createDropdown(axis) {
-        if(this.state != null && this.state.data != null) {
-            let labels = this.state.data[1];
+        if(this.state != null && this.state.data != null && this.state.data.length > 0) {
+            let labels = Object.keys(this.state.data[0]['Performance']);
             return ( //So either this dropdown is for just the y-axis (since we could keep the x-axis as minutes played) or we have two dropdowns
                 <select>
                     <option key="a" value={-1}>Select the X-Axis</option> 
