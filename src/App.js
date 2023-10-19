@@ -17,7 +17,16 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.state = {data: null, xAxis: "", yAxis: ""}
+        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 10, yMin: 0, yMax: 10}
+    }
+
+    toPlotCoords(x, y) {
+        let newX = ((x - this.state.xMin) / (this.state.xMax - this.state.xMin)) * this.width;
+        let newY = ((y - this.state.yMin) / (this.state.yMax - this.state.yMin)) * this.height;
+        return {
+            'x': newX,
+            'y': newY,
+        }
     }
 
     loadDataset(filename) {
@@ -83,11 +92,11 @@ class Circles extends React.Component {
     createChart() {
         if(this.state != null && this.state.data != null) {
             return this.state.data.map((line, i) => {
-                if(i < 2) {
-                    return null;
-                }
-                let x = 50;
-                let y = 25;
+                let performance = line['Performance'];
+                let coords = this.toPlotCoords(performance.Gls, performance.Ast)
+                console.log(coords);
+                let x = coords.x;
+                let y = coords.y;
                 let color = "blue";
                 return (
                 <circle
@@ -105,7 +114,7 @@ class Circles extends React.Component {
     render() {
         if(!this.loading) {
             this.loading = true;
-            this.loadDataset("./data/2023-2024.csv");
+            this.loadDataset("./data/2022-2023.csv");
         }
         
         let width = this.width;
