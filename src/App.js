@@ -17,7 +17,7 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 10, yMin: 0, yMax: 10}
+        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 20, yMin: 0, yMax: 20}
     }
 
     toPlotCoords(x, y) {
@@ -126,12 +126,69 @@ class Circles extends React.Component {
                     <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="black" strokeWidth="0.1" />
                     <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="0.1" />
                     {this.createChart()}
+                    {this.renderXAxis()}
+                    {this.renderYAxis()}
                 </svg>
             </div>
             
         ); 
     }
+
+
+    renderXAxis() {
+        const desiredTickCount = 20; // Set your desired number of tick marks
+        const xAxisLabels = this.state.data ? Object.keys(this.state.data[0]['Performance']) : [];
+        const xRange = this.state.xMax - this.state.xMin;
+        const tickCount = Math.min(desiredTickCount, xAxisLabels.length); // Ensure you don't exceed the available data points
+    
+        return (
+            <g>
+                <line x1={0} y1={this.height / 2} x2={this.width} y2={this.height / 2} stroke="black" strokeWidth="0.5" />
+                {xAxisLabels.map((label, i) => {
+                    if (i % (xAxisLabels.length / tickCount) === 0) { // Control the number of tick marks
+                        const x = (i / (xAxisLabels.length - 1)) * this.width;
+                        const value = this.state.xMin + (i / (xAxisLabels.length - 1)) * xRange;
+                        return (
+                            <g key={i}>
+                                <line x1={x} y1={this.height / 2 - 3} x2={x} y2={this.height / 2 + 3} stroke="black" strokeWidth="0.5" />
+                                <text x={x} y={this.height / 2 + 10} fontSize="3" textAnchor="middle">{value.toFixed(1)}</text>
+                            </g>
+                        );
+                    }
+                    return null; // Hide the labels and tick marks that are not part of the selected tickCount
+                })}
+            </g>
+        );
+    }
+    
+
+    renderYAxis() {
+        const tickCount = 5; // You can adjust this based on your requirements
+        const yAxisLabels = this.state.data ? Object.keys(this.state.data[0]['Performance']) : [];
+        const yRange = this.state.yMax - this.state.yMin;
+    
+        return (
+            <g>
+                <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.25" />
+                {yAxisLabels.map((label, i) => {
+                    const y = (i / (yAxisLabels.length - 1)) * this.height;
+                    const value = this.state.yMin + (i / (yAxisLabels.length - 1)) * yRange;
+                    return (
+                        <g key={i}>
+                            <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
+                            <text x={this.width / 2 - 1} y={y + 3} fontSize="1" textAnchor="end">{value.toFixed(1)}</text>
+                        </g>
+                    );
+                })}
+            </g>
+        );
+    }
+    
+
+
 }
+
+
 
 function App() {
     return (
