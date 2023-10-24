@@ -106,7 +106,7 @@ class Circles extends React.Component {
                 let color = line.color;
 
                 const handleClick = () => {
-                    console.log(`Clicked Point ${i}: Name = ${player.Player},  Goals=${performance.Gls}, Assists=${performance.Ast}`);
+                    console.log(`Clicked Point ${i}: Name = ${player.Player},  Goals=${ performance.Gls}, Assists=${performance.Ast}`);
                     this.setColor(i);
                 };
 
