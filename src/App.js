@@ -17,7 +17,7 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 33, yMin: 0, yMax: 15}
+        this.state = {data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 33, yMin: 0, yMax: 15}
     }
 
     toPlotCoords(x, y) {
@@ -74,15 +74,20 @@ class Circles extends React.Component {
         if(this.state != null && this.state.data != null && this.state.data.length > 0) {
             let labels = Object.keys(this.state.data[0]['Performance']);
             return ( //So either this dropdown is for just the y-axis (since we could keep the x-axis as minutes played) or we have two dropdowns
-                <select>
-                    <option key="a" value={-1}>Select the X-Axis</option> 
+                <select onChange={(e) => {
+                        let newState = this.state;
+                        newState[axis] = e.target.value;
+                        this.setState(newState);
+                    }}>
+                    <optgroup label={'Select the ' + axis}>
                     {labels.map((option, i) => {
                         return (
-                            <option key={i} value={i}>
+                            <option key={i} value={option}>
                                 {option}
                             </option>
                         )
                     })}
+                    </optgroup>
                 </select>
             )
         }
@@ -94,8 +99,7 @@ class Circles extends React.Component {
         if(this.state != null && this.state.data != null) {
             return this.state.data.map((line, i) => {
                 let performance = line['Performance'];
-                let coords = this.toPlotCoords(performance.Gls, performance.Ast)
-                console.log(coords);
+                let coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis])
                 let x = coords.x;
                 let y = coords.y;
                 let color = line.color;
@@ -122,7 +126,8 @@ class Circles extends React.Component {
         let height = this.height;
         return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
-                {this.createDropdown("x")} 
+                {this.createDropdown("xAxis")}
+                {this.createDropdown("yAxis")}
                 <svg viewBox="0 0 100 50" style={{border: '3px solid black', margin: '5px'}}>
                     <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="black" strokeWidth="0.1" />
                     <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="0.1" />
