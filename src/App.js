@@ -91,26 +91,33 @@ class Circles extends React.Component {
     
 
     createChart() {
-        if(this.state != null && this.state.data != null) {
+        if (this.state != null && this.state.data != null) {
             return this.state.data.map((line, i) => {
                 let performance = line['Performance'];
-                let coords = this.toPlotCoords(performance.Gls, performance.Ast)
-                console.log(coords);
+                let coords = this.toPlotCoords(performance.Gls, performance.Ast);
                 let x = coords.x;
                 let y = coords.y;
                 let color = line.color;
+    
+                const handleClick = () => {
+                    console.log(`Clicked Point ${i}: x=${x}, y=${y}`);
+                    this.setColor(i);
+                };
+    
                 return (
-                <circle
-                    cx={x}
-                    cy={y}
-                    key={i}
-                    r=".5" //Maybe should tweak size of circles because of amount of them
-                    fill={color}
-                    onClick={() => this.setColor(i)}
-                />
-            )})
+                    <circle
+                        cx={x}
+                        cy={y}
+                        key={i}
+                        r=".5" //Maybe should tweak size of circles because of the number of them
+                        fill={color}
+                        onClick={handleClick}
+                    />
+                );
+            });
         }
     }
+    
 
     render() {
         if(!this.loading) {
@@ -163,27 +170,53 @@ class Circles extends React.Component {
     }
     
 
+    // renderYAxis() {
+    //     const tickCount = 5; // You can adjust this based on your requirements
+    //     const yAxisLabels = this.state.data ? Object.keys(this.state.data[0]['Performance']) : [];
+    //     const yRange = this.state.yMax - this.state.yMin;
+    
+    //     return (
+    //         <g>
+    //             <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.25" />
+    //             {yAxisLabels.map((label, i) => {
+    //                 const y = (i / (yAxisLabels.length - 1)) * this.height;
+    //                 const value = this.state.yMin + (i / (yAxisLabels.length - 1)) * yRange;
+    //                 return (
+    //                     <g key={i}>
+    //                         <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
+    //                         <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize= "1" textAnchor="end">{value.toFixed(1)}</text>
+    //                     </g>
+    //                 );
+    //             })}
+    //         </g>
+    //     );
+    // }
     renderYAxis() {
         const tickCount = 5; // You can adjust this based on your requirements
-        const yAxisLabels = this.state.data ? Object.keys(this.state.data[0]['Performance']) : [];
-        const yRange = this.state.yMax - this.state.yMin;
+        const data = this.state.data;
+        const yAxisProperty = this.state.yAxis;
+        const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
+        const yMin = Math.min(...yValues);
+        const yMax = Math.max(...yValues);
+        const yRange = yMax - yMin;
     
         return (
             <g>
                 <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.25" />
-                {yAxisLabels.map((label, i) => {
-                    const y = (i / (yAxisLabels.length - 1)) * this.height;
-                    const value = this.state.yMin + (i / (yAxisLabels.length - 1)) * yRange;
+                {Array.from({ length: tickCount }).map((_, i) => {
+                    const y = (i / (tickCount - 1)) * this.height;
+                    const value = yMax - (i / (tickCount - 1)) * yRange; // Invert the value here
                     return (
                         <g key={i}>
                             <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
-                            <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize= "1" textAnchor="end">{value.toFixed(1)}</text>
+                            <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize="1" textAnchor="end">{value.toFixed(1)}</text>
                         </g>
                     );
                 })}
             </g>
         );
     }
+    
     
 
 
