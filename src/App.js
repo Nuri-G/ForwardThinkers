@@ -144,7 +144,7 @@ class Circles extends React.Component {
     
         return (
             <g>
-                <line x1={0} y1={this.height / 2} x2={this.width} y2={this.height / 2} stroke="black" strokeWidth="0.5" />
+                <line x1={0} y1={this.height / 2} x2={this.width} y2={this.height / 2} stroke="black" strokeWidth="0.25" />
                 {xAxisLabels.map((label, i) => {
                     if (i % (xAxisLabels.length / tickCount) === 0) { // Control the number of tick marks
                         const x = (i / (xAxisLabels.length - 1)) * this.width;
