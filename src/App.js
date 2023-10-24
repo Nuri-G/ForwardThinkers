@@ -17,12 +17,12 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 33, yMin: 0, yMax: 15}
+        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 38, yMin: 0, yMax: 15}
     }
 
     toPlotCoords(x, y) {
         let newX = ((x - this.state.xMin) / (this.state.xMax - this.state.xMin)) * this.width;
-        let newY = ((y - this.state.yMin) / (this.state.yMax - this.state.yMin)) * this.height;
+        let newY = 50 - ((y - this.state.yMin) / (this.state.yMax - this.state.yMin)) * this.height;
         return {
             'x': newX,
             'y': newY,
@@ -94,13 +94,14 @@ class Circles extends React.Component {
         if (this.state != null && this.state.data != null) {
             return this.state.data.map((line, i) => {
                 let performance = line['Performance'];
+                let player = line['Player'];
                 let coords = this.toPlotCoords(performance.Gls, performance.Ast);
                 let x = coords.x;
                 let y = coords.y;
                 let color = line.color;
     
                 const handleClick = () => {
-                    console.log(`Clicked Point ${i}: x=${x}, y=${y}`);
+                    console.log(`Clicked Point ${i}: Name = ${player.Player},  Goals=${ performance.Gls}, Assists=${performance.Ast}`);
                     this.setColor(i);
                 };
     
