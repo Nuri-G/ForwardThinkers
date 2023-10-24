@@ -17,7 +17,7 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.state = {data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15}
+        this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15 }
     }
 
     toPlotCoords(x, y) {
@@ -41,14 +41,14 @@ class Circles extends React.Component {
             let currentSubcategory = null;
             let processedData = [];
 
-            for(let line of data) {
+            for (let line of data) {
                 let processedLine = {};
 
-                for(let i = 0; i < categories.length; i++) {
-                    if(categories[i] !== '') {
+                for (let i = 0; i < categories.length; i++) {
+                    if (categories[i] !== '') {
                         currentCategory = categories[i];
 
-                        if(processedLine[currentCategory] == null) {
+                        if (processedLine[currentCategory] == null) {
                             processedLine[currentCategory] = {};
                         }
                     }
@@ -60,40 +60,40 @@ class Circles extends React.Component {
                 processedData.push(processedLine);
             }
 
-            this.setState({...this.state, data: processedData});
+            this.setState({ ...this.state, data: processedData });
         })
     }
 
     setColor(i) {
         let dataset = this.state.data;
         dataset[i].color = "green";
-        this.setState({...this.state, data: dataset});
+        this.setState({ ...this.state, data: dataset });
     }
 
     createDropdown(axis) {
-        if(this.state != null && this.state.data != null && this.state.data.length > 0) {
+        if (this.state != null && this.state.data != null && this.state.data.length > 0) {
             let labels = Object.keys(this.state.data[0]['Performance']);
             return ( //So either this dropdown is for just the y-axis (since we could keep the x-axis as minutes played) or we have two dropdowns
                 <select onChange={(e) => {
-                        let newState = this.state;
-                        newState[axis] = e.target.value;
-                        this.setState(newState);
-                    }}>
+                    let newState = this.state;
+                    newState[axis] = e.target.value;
+                    this.setState(newState);
+                }}>
                     <optgroup label={'Select the ' + axis}>
-                    {labels.map((option, i) => {
-                        return (
-                            <option key={i} value={option}>
-                                {option}
-                            </option>
-                        )
-                    })}
+                        {labels.map((option, i) => {
+                            return (
+                                <option key={i} value={option}>
+                                    {option}
+                                </option>
+                            )
+                        })}
                     </optgroup>
                 </select>
             )
         }
     }
 
-    
+
 
     createChart() {
         if (this.state != null && this.state.data != null) {
@@ -104,12 +104,12 @@ class Circles extends React.Component {
                 let x = coords.x;
                 let y = coords.y;
                 let color = line.color;
-    
+
                 const handleClick = () => {
-                    console.log(`Clicked Point ${i}: Name = ${player.Player},  Goals=${ performance.Gls}, Assists=${performance.Ast}`);
+                    console.log(`Clicked Point ${i}: Name = ${player.Player},  Goals=${performance.Gls}, Assists=${performance.Ast}`);
                     this.setColor(i);
                 };
-    
+
                 return (
                     <circle
                         cx={x}
@@ -123,21 +123,21 @@ class Circles extends React.Component {
             });
         }
     }
-    
+
 
     render() {
-        if(!this.loading) {
+        if (!this.loading) {
             this.loading = true;
             this.loadDataset("./data/2022-2023.csv");
         }
-        
+
         let width = this.width;
         let height = this.height;
         return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
                 {this.createDropdown("xAxis")}
                 {this.createDropdown("yAxis")}
-                <svg viewBox="0 0 100 50" style={{border: '3px solid black', margin: '5px'}}>
+                <svg viewBox="0 0 100 50" style={{ border: '3px solid black', margin: '5px' }}>
                     <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="black" strokeWidth="0.1" />
                     <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="0.1" />
                     {this.createChart()}
@@ -145,8 +145,8 @@ class Circles extends React.Component {
                     {this.renderYAxis()}
                 </svg>
             </div>
-            
-        ); 
+
+        );
     }
 
 
@@ -156,62 +156,80 @@ class Circles extends React.Component {
         const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
         const xMax = Math.max(...xValues);
         const xMin = Math.min(...xValues);
-        const tickCount = xMax; // You can adjust this based on your requirements
+        const tickCount = xMax - xMin + 1; // You can adjust this based on your requirements
         const xAverage = xValues.reduce((acc, val) => acc + val, 0) / xValues.length;
-    
+
         return (
             <g>
-                <line x1={0} y1={this.height / 2} x2={this.width} y2={this.height / 2} stroke="black" strokeWidth="0.25" />
+                <line x1={0} y1={this.height / 2} x2={this.width} y2={this.height / 2} stroke="black" strokeWidth="0.1" />
                 {Array.from({ length: tickCount }).map((_, i) => {
-                    const value = xMin + (i / (tickCount - 1)) * (xMax - xMin);
-                    const x = ((value - xMin) / (xMax - xMin)) * this.width;
-                    return (
-                        <g key={i}>
-                            <line x1={x} y1={this.height / 2 - 1} x2={x} y2={this.height / 2 + 1} stroke="black" strokeWidth="0.25" />
-                            <text x={x} y={this.height / 2 + 3} fontSize="1" textAnchor="middle">
-                                {value.toFixed(0)}
-                            </text>
-                        </g>
-                    );
+                    const value = xMin + i; // Calculate the tick value as a whole number
+                    const { x } = this.toPlotCoords(value, 0); // Convert value to screen coordinates
+
+                    if (i % 2 === 0) {
+                        return (
+                            <g key={i}>
+                                <line x1={x} y1={this.height / 2 - 1} x2={x} y2={this.height / 2 + 1} stroke="black" strokeWidth="0.1" />
+                                <text x={x} y={this.height / 2 + 3} fontSize="1" textAnchor="middle">{value}</text>
+                            </g>
+                        );
+                    } else {
+                        return (
+                            <line x1={x} y1={this.height / 2 - 0.5} x2={x} y2={this.height / 2 + 0.5} stroke="black" strokeWidth="0.1" key={i} />
+                        );
+                    }
                 })}
             </g>
         );
+
     }
-    
-    
-    
-    
-    
+
+
+
     renderYAxis() {
         const data = this.state.data;
         const yAxisProperty = this.state.yAxis;
         const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
         const yMax = Math.max(...yValues);
         const yMin = Math.min(...yValues);
-        const tickCount = yMax; // You can adjust this based on your requirements
+        const tickCount = yMax - yMin + 1; // You can adjust this based on your requirements
         const yAverage = yValues.reduce((acc, val) => acc + val, 0) / yValues.length;
-    
+
         return (
             <g>
-                <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.25" />
+                <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.1" />
                 {Array.from({ length: tickCount }).map((_, i) => {
-                    const y = (i / (tickCount - 1)) * this.height;
-                    const value = yMax - (i / (tickCount - 1)) * (yMax - yMin); // Invert the value here
-                    return (
-                        <g key={i}>
-                            <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
-                            <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize="1" textAnchor="end">{value.toFixed(0)}</text>
-                        </g>
-                    );
+                    const value = yMin + i; // Calculate the tick value as a whole number
+                    const { y } = this.toPlotCoords(0, value); // Convert value to screen coordinates
+
+                    if (i % 2 === 0) {
+                        return (
+                            <g key={i}>
+                                <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.1" />
+                                <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize="1" textAnchor="end">{value}</text>
+                            </g>
+                        );
+                    } else {
+                        return (
+                            <line x1={this.width / 2 - 0.5} y1={y} x2={this.width / 2 + 0.5} y2={y} stroke="black" strokeWidth="0.1" key={i} />
+                        );
+                    }
                 })}
             </g>
         );
+
+
+
+
+
+
+
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 
 
 }
