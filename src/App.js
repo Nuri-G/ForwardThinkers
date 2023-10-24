@@ -66,7 +66,7 @@ class Circles extends React.Component {
 
     setColor(i) {
         let dataset = this.state.data;
-        dataset[i].color = "red";
+        dataset[i].color = "green";
         this.setState({...this.state, data: dataset});
     }
 
@@ -177,7 +177,7 @@ class Circles extends React.Component {
                     return (
                         <g key={i}>
                             <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
-                            <text x={this.width / 2 - 1} y={y + 3} fontSize="1" textAnchor="end">{value.toFixed(1)}</text>
+                            <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize= "1" textAnchor="end">{value.toFixed(1)}</text>
                         </g>
                     );
                 })}
