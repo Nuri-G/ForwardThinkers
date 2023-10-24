@@ -17,7 +17,7 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 20, yMin: 0, yMax: 20}
+        this.state = {data: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 33, yMin: 0, yMax: 15}
     }
 
     toPlotCoords(x, y) {
@@ -151,8 +151,8 @@ class Circles extends React.Component {
                         const value = this.state.xMin + (i / (xAxisLabels.length - 1)) * xRange;
                         return (
                             <g key={i}>
-                                <line x1={x} y1={this.height / 2 - 3} x2={x} y2={this.height / 2 + 3} stroke="black" strokeWidth="0.5" />
-                                <text x={x} y={this.height / 2 + 10} fontSize="3" textAnchor="middle">{value.toFixed(1)}</text>
+                                <line x1={x} y1={this.height / 2 - 1} x2={x} y2={this.height / 2 + 1} stroke="black" strokeWidth="0.25" />
+                                <text x={x} y={this.height / 2 + 3} fontSize="1.5" textAnchor="middle">{value.toFixed(1)}</text>
                             </g>
                         );
                     }
