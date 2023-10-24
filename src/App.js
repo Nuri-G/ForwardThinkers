@@ -145,78 +145,65 @@ class Circles extends React.Component {
 
 
     renderXAxis() {
-        const desiredTickCount = 20; // Set your desired number of tick marks
-        const xAxisLabels = this.state.data ? Object.keys(this.state.data[0]['Performance']) : [];
-        const xRange = this.state.xMax - this.state.xMin;
-        const tickCount = Math.min(desiredTickCount, xAxisLabels.length); // Ensure you don't exceed the available data points
+        const data = this.state.data;
+        const xAxisProperty = this.state.xAxis;
+        const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
+        const xMax = Math.max(...xValues);
+        const xMin = Math.min(...xValues);
+        const tickCount = xMax; // You can adjust this based on your requirements
+        const xAverage = xValues.reduce((acc, val) => acc + val, 0) / xValues.length;
     
         return (
             <g>
                 <line x1={0} y1={this.height / 2} x2={this.width} y2={this.height / 2} stroke="black" strokeWidth="0.25" />
-                {xAxisLabels.map((label, i) => {
-                    if (i % (xAxisLabels.length / tickCount) === 0) { // Control the number of tick marks
-                        const x = (i / (xAxisLabels.length - 1)) * this.width;
-                        const value = this.state.xMin + (i / (xAxisLabels.length - 1)) * xRange;
-                        return (
-                            <g key={i}>
-                                <line x1={x} y1={this.height / 2 - 1} x2={x} y2={this.height / 2 + 1} stroke="black" strokeWidth="0.25" />
-                                <text x={x} y={this.height / 2 + 3} fontSize="1.5" textAnchor="middle">{value.toFixed(1)}</text>
-                            </g>
-                        );
-                    }
-                    return null; // Hide the labels and tick marks that are not part of the selected tickCount
-                })}
-            </g>
-        );
-    }
-    
-
-    // renderYAxis() {
-    //     const tickCount = 5; // You can adjust this based on your requirements
-    //     const yAxisLabels = this.state.data ? Object.keys(this.state.data[0]['Performance']) : [];
-    //     const yRange = this.state.yMax - this.state.yMin;
-    
-    //     return (
-    //         <g>
-    //             <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.25" />
-    //             {yAxisLabels.map((label, i) => {
-    //                 const y = (i / (yAxisLabels.length - 1)) * this.height;
-    //                 const value = this.state.yMin + (i / (yAxisLabels.length - 1)) * yRange;
-    //                 return (
-    //                     <g key={i}>
-    //                         <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
-    //                         <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize= "1" textAnchor="end">{value.toFixed(1)}</text>
-    //                     </g>
-    //                 );
-    //             })}
-    //         </g>
-    //     );
-    // }
-    renderYAxis() {
-        const tickCount = 5; // You can adjust this based on your requirements
-        const data = this.state.data;
-        const yAxisProperty = this.state.yAxis;
-        const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
-        const yMin = Math.min(...yValues);
-        const yMax = Math.max(...yValues);
-        const yRange = yMax - yMin;
-    
-        return (
-            <g>
-                <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.25" />
                 {Array.from({ length: tickCount }).map((_, i) => {
-                    const y = (i / (tickCount - 1)) * this.height;
-                    const value = yMax - (i / (tickCount - 1)) * yRange; // Invert the value here
+                    const value = xMin + (i / (tickCount - 1)) * (xMax - xMin);
+                    const x = ((value - xMin) / (xMax - xMin)) * this.width;
                     return (
                         <g key={i}>
-                            <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
-                            <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize="1" textAnchor="end">{value.toFixed(1)}</text>
+                            <line x1={x} y1={this.height / 2 - 1} x2={x} y2={this.height / 2 + 1} stroke="black" strokeWidth="0.25" />
+                            <text x={x} y={this.height / 2 + 3} fontSize="1" textAnchor="middle">
+                                {value.toFixed(0)}
+                            </text>
                         </g>
                     );
                 })}
             </g>
         );
     }
+    
+    
+    
+    
+    
+    renderYAxis() {
+        const data = this.state.data;
+        const yAxisProperty = this.state.yAxis;
+        const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
+        const yMax = Math.max(...yValues);
+        const yMin = Math.min(...yValues);
+        const tickCount = yMax; // You can adjust this based on your requirements
+        const yAverage = yValues.reduce((acc, val) => acc + val, 0) / yValues.length;
+    
+        return (
+            <g>
+                <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.25" />
+                {Array.from({ length: tickCount }).map((_, i) => {
+                    const y = (i / (tickCount - 1)) * this.height;
+                    const value = yMax - (i / (tickCount - 1)) * (yMax - yMin); // Invert the value here
+                    return (
+                        <g key={i}>
+                            <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.25" />
+                            <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize="1" textAnchor="end">{value.toFixed(0)}</text>
+                        </g>
+                    );
+                })}
+            </g>
+        );
+    }
+    
+    
+    
     
     
 
