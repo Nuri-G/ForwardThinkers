@@ -1,6 +1,7 @@
 import './App.css';
 import React from 'react';
 import Papa from "papaparse";
+import swal from 'sweetalert2'; // NEED TO npm install sweetalert2 ------------- IMPORTANT!!!!!!!
 
 async function fetchFile(filename) {
     const response = await fetch(filename);
@@ -106,7 +107,12 @@ class Circles extends React.Component {
                 let color = line.color;
 
                 const handleClick = () => {
-                    alert(`Clicked Point ${i}: Name = ${player.Player},  Goals=${ performance.Gls}, Assists=${performance.Ast}`);
+                    swal.fire({title: player.Player, text: 'Team: ' + player.Squad + 
+                        '\nGoals: ' + performance.Gls + '\nAssists: ' + performance.Ast,
+                        imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
+                        imageHeight: 100
+                    
+                    });
                     this.setColor(i);
                 };
 
