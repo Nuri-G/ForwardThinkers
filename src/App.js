@@ -112,7 +112,7 @@ class Circles extends React.Component {
                         imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
                         imageHeight: 100
                     
-                    });
+                    }); //Make sure to npm install sweetalert2 for this to work ----------------
                     this.setColor(i);
                 };
 
