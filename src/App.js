@@ -7,7 +7,6 @@ import randomColor from 'randomcolor';
 function hexagonCoords(x, y, radius) {
     let angle = 0;
     let out = '';
-
     for(let i = 0; i < 6; i++) {
         let angleX = Math.cos(angle) * radius;
         let angleY = Math.sin(angle) * radius;
@@ -40,6 +39,33 @@ class Circles extends React.Component {
         this.loading = false;
         this.teamColors = new Map();
         this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15 } // Updated
+        this.logos = {"Arsenal": "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
+        "Aston Villa": "https://static.vecteezy.com/system/resources/previews/015/863/703/original/aston-villa-logo-on-transparent-background-free-vector.jpg",
+        "Bournemouth": "https://1000logos.net/wp-content/uploads/2018/07/AFC-Bournemouth-logo.jpg",
+        "Brentford": "https://static.vecteezy.com/system/resources/previews/015/863/708/original/brentford-logo-on-transparent-background-free-vector.jpg",
+        "Brighton": "https://1000logos.net/wp-content/uploads/2018/07/Brighton-Hove-Albion-logo.jpg",
+        "Burnley": "https://1000logos.net/wp-content/uploads/2021/02/Burnley-logo.jpg",
+        "Chelsea": "https://i.pinimg.com/474x/46/a2/7f/46a27f96e154a5d64bdf06747c534fa6.jpg",
+        "Crystal Palace": "https://static.vecteezy.com/system/resources/previews/026/135/395/non_2x/crystal-palace-club-logo-black-and-white-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
+        "Everton": "https://logowik.com/content/uploads/images/everton-football-club4785.jpg",
+        "Fulham": "https://s3.eu-west-1.amazonaws.com/gc-media-assets.fulhamfc.com/07a09500-8e25-11ea-b943-87fee4c4ba25.jpg",
+        "Liverpool": "https://logos-world.net/wp-content/uploads/2020/06/Liverpool-Logo-1955-1968.jpg",
+        "Luton Town": "https://www.hdwallpapers.in/download/emblem_logo_soccer_white_background_hd_luton_town_f_c-HD.jpg",
+        "Manchester City": "https://i.pinimg.com/originals/3d/f7/e9/3df7e96bfafffcb2878b3b0c66e7af65.jpg" ,
+        "Manchester Utd": "https://i.pinimg.com/originals/05/64/e2/0564e2514b9d8694cc8a34d04963e1a4.png",
+        "Newcastle Utd": "https://logowik.com/content/uploads/images/744_newcastle_united_logo.jpg",
+        "Nott'ham Forest": "https://i.pinimg.com/originals/68/0f/fa/680ffadd5aa7d0164592c231864d5122.jpg",
+        "Sheffield Utd": "https://logowik.com/content/uploads/images/sheffield-united-fc1129.jpg",
+        "Tottenham": "https://1000logos.net/wp-content/uploads/2018/06/Tottenham-Hotspur-2006.jpg",
+        "West Ham": "https://static.vecteezy.com/system/resources/previews/026/135/477/original/west-ham-united-club-logo-black-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
+        "Wolves": "https://logowik.com/content/uploads/images/wolverhampton-wanderers-fc8015.jpg",
+        "Leicester City": "https://i.ytimg.com/vi/_0-hi3l60UU/maxresdefault.jpg",
+        "Leeds United": "https://images.alphacoders.com/115/1157439.png",
+        "Southampton": "https://logowik.com/content/uploads/images/840_southamptonfc.jpg",
+        "Watford": "https://www.watfordfc.com/storage/12239/conversions/Badge-8---Current-Crest-landscape_image.jpg",
+        "West Brom": "https://1000logos.net/wp-content/uploads/2018/07/West-Bromwich-Albion-Logo-2000.jpg",
+        "Norwich City": "https://logowik.com/content/uploads/images/norwich-city7754.jpg"
+    };
     }
 
     toPlotCoords(x, y) {
@@ -168,7 +194,7 @@ class Circles extends React.Component {
                 const handleClick = () => {
                     swal.fire({title: player.Player, text: 'Team: ' + player.Squad + 
                         '\nGoals: ' + performance.Gls + '\nAssists: ' + performance.Ast,
-                        imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
+                        imageUrl: this.logos[player.Squad], 
                         imageHeight: 100
                     
                     });
