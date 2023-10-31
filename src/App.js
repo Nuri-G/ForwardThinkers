@@ -8,11 +8,11 @@ import Select from 'react-select';
 function hexagonCoords(x, y, radius) {
     let angle = 0;
     let out = '';
-    for(let i = 0; i < 6; i++) {
+    for (let i = 0; i < 6; i++) {
         let angleX = Math.cos(angle) * radius;
         let angleY = Math.sin(angle) * radius;
 
-        if(i > 0) {
+        if (i > 0) {
             out += ' ';
         }
         out += (x + angleX) + ',' + (y + angleY);
@@ -40,33 +40,34 @@ class Circles extends React.Component {
         this.loading = false;
         this.teamColors = new Map();
         this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15, activeTeams: new Set() } // Updated
-        this.logos = {"Arsenal": "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
-        "Aston Villa": "https://static.vecteezy.com/system/resources/previews/015/863/703/original/aston-villa-logo-on-transparent-background-free-vector.jpg",
-        "Bournemouth": "https://1000logos.net/wp-content/uploads/2018/07/AFC-Bournemouth-logo.jpg",
-        "Brentford": "https://static.vecteezy.com/system/resources/previews/015/863/708/original/brentford-logo-on-transparent-background-free-vector.jpg",
-        "Brighton": "https://1000logos.net/wp-content/uploads/2018/07/Brighton-Hove-Albion-logo.jpg",
-        "Burnley": "https://1000logos.net/wp-content/uploads/2021/02/Burnley-logo.jpg",
-        "Chelsea": "https://i.pinimg.com/474x/46/a2/7f/46a27f96e154a5d64bdf06747c534fa6.jpg",
-        "Crystal Palace": "https://static.vecteezy.com/system/resources/previews/026/135/395/non_2x/crystal-palace-club-logo-black-and-white-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
-        "Everton": "https://logowik.com/content/uploads/images/everton-football-club4785.jpg",
-        "Fulham": "https://s3.eu-west-1.amazonaws.com/gc-media-assets.fulhamfc.com/07a09500-8e25-11ea-b943-87fee4c4ba25.jpg",
-        "Liverpool": "https://logos-world.net/wp-content/uploads/2020/06/Liverpool-Logo-1955-1968.jpg",
-        "Luton Town": "https://www.hdwallpapers.in/download/emblem_logo_soccer_white_background_hd_luton_town_f_c-HD.jpg",
-        "Manchester City": "https://i.pinimg.com/originals/3d/f7/e9/3df7e96bfafffcb2878b3b0c66e7af65.jpg" ,
-        "Manchester Utd": "https://i.pinimg.com/originals/05/64/e2/0564e2514b9d8694cc8a34d04963e1a4.png",
-        "Newcastle Utd": "https://logowik.com/content/uploads/images/744_newcastle_united_logo.jpg",
-        "Nott'ham Forest": "https://i.pinimg.com/originals/68/0f/fa/680ffadd5aa7d0164592c231864d5122.jpg",
-        "Sheffield Utd": "https://logowik.com/content/uploads/images/sheffield-united-fc1129.jpg",
-        "Tottenham": "https://1000logos.net/wp-content/uploads/2018/06/Tottenham-Hotspur-2006.jpg",
-        "West Ham": "https://static.vecteezy.com/system/resources/previews/026/135/477/original/west-ham-united-club-logo-black-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
-        "Wolves": "https://logowik.com/content/uploads/images/wolverhampton-wanderers-fc8015.jpg",
-        "Leicester City": "https://i.ytimg.com/vi/_0-hi3l60UU/maxresdefault.jpg",
-        "Leeds United": "https://images.alphacoders.com/115/1157439.png",
-        "Southampton": "https://logowik.com/content/uploads/images/840_southamptonfc.jpg",
-        "Watford": "https://www.watfordfc.com/storage/12239/conversions/Badge-8---Current-Crest-landscape_image.jpg",
-        "West Brom": "https://1000logos.net/wp-content/uploads/2018/07/West-Bromwich-Albion-Logo-2000.jpg",
-        "Norwich City": "https://logowik.com/content/uploads/images/norwich-city7754.jpg"
-    };
+        this.logos = {
+            "Arsenal": "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg",
+            "Aston Villa": "https://static.vecteezy.com/system/resources/previews/015/863/703/original/aston-villa-logo-on-transparent-background-free-vector.jpg",
+            "Bournemouth": "https://1000logos.net/wp-content/uploads/2018/07/AFC-Bournemouth-logo.jpg",
+            "Brentford": "https://static.vecteezy.com/system/resources/previews/015/863/708/original/brentford-logo-on-transparent-background-free-vector.jpg",
+            "Brighton": "https://1000logos.net/wp-content/uploads/2018/07/Brighton-Hove-Albion-logo.jpg",
+            "Burnley": "https://1000logos.net/wp-content/uploads/2021/02/Burnley-logo.jpg",
+            "Chelsea": "https://i.pinimg.com/474x/46/a2/7f/46a27f96e154a5d64bdf06747c534fa6.jpg",
+            "Crystal Palace": "https://static.vecteezy.com/system/resources/previews/026/135/395/non_2x/crystal-palace-club-logo-black-and-white-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
+            "Everton": "https://logowik.com/content/uploads/images/everton-football-club4785.jpg",
+            "Fulham": "https://s3.eu-west-1.amazonaws.com/gc-media-assets.fulhamfc.com/07a09500-8e25-11ea-b943-87fee4c4ba25.jpg",
+            "Liverpool": "https://logos-world.net/wp-content/uploads/2020/06/Liverpool-Logo-1955-1968.jpg",
+            "Luton Town": "https://www.hdwallpapers.in/download/emblem_logo_soccer_white_background_hd_luton_town_f_c-HD.jpg",
+            "Manchester City": "https://i.pinimg.com/originals/3d/f7/e9/3df7e96bfafffcb2878b3b0c66e7af65.jpg",
+            "Manchester Utd": "https://i.pinimg.com/originals/05/64/e2/0564e2514b9d8694cc8a34d04963e1a4.png",
+            "Newcastle Utd": "https://logowik.com/content/uploads/images/744_newcastle_united_logo.jpg",
+            "Nott'ham Forest": "https://i.pinimg.com/originals/68/0f/fa/680ffadd5aa7d0164592c231864d5122.jpg",
+            "Sheffield Utd": "https://logowik.com/content/uploads/images/sheffield-united-fc1129.jpg",
+            "Tottenham": "https://1000logos.net/wp-content/uploads/2018/06/Tottenham-Hotspur-2006.jpg",
+            "West Ham": "https://static.vecteezy.com/system/resources/previews/026/135/477/original/west-ham-united-club-logo-black-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
+            "Wolves": "https://logowik.com/content/uploads/images/wolverhampton-wanderers-fc8015.jpg",
+            "Leicester City": "https://i.ytimg.com/vi/_0-hi3l60UU/maxresdefault.jpg",
+            "Leeds United": "https://images.alphacoders.com/115/1157439.png",
+            "Southampton": "https://logowik.com/content/uploads/images/840_southamptonfc.jpg",
+            "Watford": "https://www.watfordfc.com/storage/12239/conversions/Badge-8---Current-Crest-landscape_image.jpg",
+            "West Brom": "https://1000logos.net/wp-content/uploads/2018/07/West-Bromwich-Albion-Logo-2000.jpg",
+            "Norwich City": "https://logowik.com/content/uploads/images/norwich-city7754.jpg"
+        };
     }
 
     toPlotCoords(x, y) {
@@ -121,7 +122,7 @@ class Circles extends React.Component {
         let dataset = this.state.data;
 
         let teamNames = new Set();
-        for(let player of dataset) {
+        for (let player of dataset) {
             teamNames.add(player.Player.Squad);
         }
 
@@ -130,16 +131,16 @@ class Circles extends React.Component {
         });
 
         let i = 0;
-        for(let team of teamNames) {
+        for (let team of teamNames) {
             this.teamColors.set(team, colors[i]);
             i++;
         }
 
-        for(let i = 0; i < dataset.length; i++) {
+        for (let i = 0; i < dataset.length; i++) {
             let team = dataset[i].Player.Squad;
             dataset[i].color = this.teamColors.get(team);
         }
-        
+
         this.setState({ ...this.state, data: dataset });
     }
 
@@ -149,10 +150,10 @@ class Circles extends React.Component {
         let min = Math.min.apply(0, data) - 0.5;
         let max = Math.max.apply(0, data) + 0.5;
 
-        if(axis === 'xAxis') {
+        if (axis === 'xAxis') {
             newState.xMax = max;
             newState.xMin = min;
-        } else if(axis === 'yAxis') {
+        } else if (axis === 'yAxis') {
             newState.yMax = max;
             newState.yMin = min;
         }
@@ -181,41 +182,99 @@ class Circles extends React.Component {
     }
 
 
-
     createChart() {
         if (this.state != null && this.state.data != null) {
-            return this.state.data.map((line, i) => {
-                let performance = line['Performance'];
-                let coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis])
-                let player = line['Player'];
+            const dataPoints = this.state.data.map((line, i) => {
+                const performance = line['Performance'];
+                const coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis]);
+                const player = line['Player'];
                 if(!(this.state.activeTeams.size === 0) && !this.state.activeTeams.has(player.Squad)) {
                     return null;
                 }
-                let x = coords.x;
-                let y = coords.y;
-                let color = line.color;
+                const x = coords.x;
+                const y = coords.y;
+                const color = line.color;
+
+                return {
+                    player: player,
+                    x: x,
+                    y: y,
+                    color: color,
+                    xAxisName: this.state.xAxis,
+                    yAxisName: this.state.yAxis,
+                    xAxisValue: performance[this.state.xAxis],
+                    yAxisValue: performance[this.state.yAxis]
+                };
+            });
+
+            // Create an object to store data points with the same (x, y) coordinates
+            const overlappingDataPoints = {};
+
+            // Iterate through the data points and group them by (x, y) coordinates
+            dataPoints.forEach((dataPoint) => {
+                if(dataPoint === null) return;
+                const { x, y } = dataPoint;
+                const key = `${x}-${y}`;
+
+                if (!overlappingDataPoints[key]) {
+                    overlappingDataPoints[key] = [dataPoint];
+                } else {
+                    overlappingDataPoints[key].push(dataPoint);
+                }
+            });
+
+            return Object.values(overlappingDataPoints).map((group, i) => {
+                const { player, x, y, color, xAxisName, yAxisName, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
 
                 const handleClick = () => {
-                    swal.fire({title: player.Player, text: 'Team: ' + player.Squad + 
-                        '\nGoals: ' + performance.Gls + '\nAssists: ' + performance.Ast,
-                        imageUrl: this.logos[player.Squad], 
-                        imageHeight: 100
-                    
+                    // Show a modal or do something with the data for this group of data points.
+                    const modalContent = group.map((data) => {
+                        const { player: groupPlayer, color: groupColor, xAxisName, yAxisName, xAxisValue, yAxisValue } = data;
+                        return `${groupPlayer.Player} (Team: ${groupPlayer.Squad}, ${xAxisName}: ${xAxisValue}, ${yAxisName}: ${yAxisValue})`
+                    }).join('\n');
+
+                    swal.fire({
+                        title: 'Players at ' + xAxisValue + ' ' + xAxisName + ', ' + yAxisValue + ' ' + yAxisName,
+                        text: modalContent,
+                        imageUrl: this.logos[player.Squad],
+                        imageHeight: 100,
                     });
                 };
+
+                const handleHover = (e) => {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.left = e.pageX + 'px';
+                    tooltip.style.top = e.pageY + 'px';
+                    tooltip.style.userSelect = 'none';
+                    document.body.appendChild(tooltip);
+                
+                    const handleMouseLeave = () => {
+                        document.body.removeChild(tooltip);
+                        e.target.removeEventListener('mouseleave', handleMouseLeave);
+                    };
+                
+                    e.target.addEventListener('mouseleave', handleMouseLeave);
+                };
+
 
                 return (
                     <polygon
                         points={hexagonCoords(x, y, 1)}
                         key={i}
-                        r=".5" //Maybe should tweak size of circles because of the number of them
+                        r=".5"
                         fill={color}
                         onClick={handleClick}
+                        onMouseEnter={handleHover}
+                    //onMouseLeave={handleMouseLeave}
                     />
                 );
             });
         }
     }
+
 
 
     render() {
