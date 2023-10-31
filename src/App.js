@@ -231,7 +231,7 @@ class Circles extends React.Component {
                     swal.fire({
                         title: 'Players at ' + xAxisValue + ' ' + xAxisName + ', ' + yAxisValue + ' ' + yAxisName,
                         text: modalContent,
-                        imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg",
+                        imageUrl: this.logos[player.Squad],
                         imageHeight: 100,
                     });
                 };
