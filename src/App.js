@@ -3,6 +3,7 @@ import React from 'react';
 import Papa from "papaparse";
 import swal from 'sweetalert2';
 import randomColor from 'randomcolor';
+import Select from 'react-select';
 
 function hexagonCoords(x, y, radius) {
     let angle = 0;
@@ -38,7 +39,7 @@ class Circles extends React.Component {
         this.height = 50;
         this.loading = false;
         this.teamColors = new Map();
-        this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15 } // Updated
+        this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15, activeTeams: new Set(['all']) } // Updated
         this.logos = {"Arsenal": "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
         "Aston Villa": "https://static.vecteezy.com/system/resources/previews/015/863/703/original/aston-villa-logo-on-transparent-background-free-vector.jpg",
         "Bournemouth": "https://1000logos.net/wp-content/uploads/2018/07/AFC-Bournemouth-logo.jpg",
@@ -187,6 +188,9 @@ class Circles extends React.Component {
                 let performance = line['Performance'];
                 let coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis])
                 let player = line['Player'];
+                if(!this.state.activeTeams.has('all') && !this.state.activeTeams.has(player.Squad)) {
+                    return;
+                }
                 let x = coords.x;
                 let y = coords.y;
                 let color = line.color;
@@ -220,8 +224,8 @@ class Circles extends React.Component {
             this.loadDataset("./data/2022-2023.csv");
         }
 
-        let width = this.width;
-        let height = this.height;
+        let options = [...this.teamColors.keys()].map(a => {return {'value': a, 'label': a}});
+        options.unshift({'value': 'all', 'label': 'Select All'});
         return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
                 {this.createDropdown("xAxis")}
@@ -231,6 +235,10 @@ class Circles extends React.Component {
                     {this.renderXAxis()}
                     {this.renderYAxis()}
                 </svg>
+                <Select defaultValue={options[0]} isMulti options={options} onChange={(values, labels) => {
+                    let activeTeams = new Set(values.map(a => a.value));
+                    this.setState({...this.state, activeTeams: activeTeams});
+                }} />
             </div>
 
         );
@@ -238,6 +246,7 @@ class Circles extends React.Component {
 
 
     renderXAxis() {
+        if(this.state.data === null) return;
         const data = this.state.data;
         const xAxisProperty = this.state.xAxis;
         const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
@@ -277,6 +286,7 @@ class Circles extends React.Component {
 
 
     renderYAxis() {
+        if(this.state.data === null) return;
         const data = this.state.data;
         const xAxisProperty = this.state.xAxis;
         const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
@@ -310,21 +320,7 @@ class Circles extends React.Component {
                 })}
             </g>
         );
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
 }
 
 
