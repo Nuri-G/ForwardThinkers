@@ -277,7 +277,7 @@ class Circles extends React.Component {
             <div>
                 {this.createDropdown("xAxis")}
                 {this.createDropdown("yAxis")}
-                <svg viewBox="0 0 100 50" style={{ border: '1px solid lightgrey', borderRadius: '5px'}}>
+                <svg viewBox="0 0 100 50" style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px'}}>
                     {this.createChart()}
                     {this.renderXAxis()}
                     {this.renderYAxis()}
