@@ -1,7 +1,8 @@
 import './App.css';
 import React from 'react';
 import Papa from "papaparse";
-import swal from 'sweetalert2'; // NEED TO npm install sweetalert2 ------------- IMPORTANT!!!!!!!
+import swal from 'sweetalert2';
+import randomColor from 'randomcolor';
 
 function hexagonCoords(x, y, radius) {
     let angle = 0;
@@ -36,6 +37,7 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
+        this.teamColors = new Map();
         this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15 } // Updated
         this.logos = {"Arsenal": "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
         "Aston Villa": "https://static.vecteezy.com/system/resources/previews/015/863/703/original/aston-villa-logo-on-transparent-background-free-vector.jpg",
@@ -109,13 +111,34 @@ class Circles extends React.Component {
             this.setState({ ...this.state, data: processedData }, () => {
                 this.updateAxis('xAxis', 'Gls');
                 this.updateAxis('yAxis', 'Gls');
+                this.setTeamColors();
             });
         })
     }
 
-    setColor(i) {
+    setTeamColors() {
         let dataset = this.state.data;
-        dataset[i].color = "green";
+
+        let teamNames = new Set();
+        for(let player of dataset) {
+            teamNames.add(player.Player.Squad);
+        }
+
+        let colors = randomColor({
+            count: teamNames.size,
+        });
+
+        let i = 0;
+        for(let team of teamNames) {
+            this.teamColors.set(team, colors[i]);
+            i++;
+        }
+
+        for(let i = 0; i < dataset.length; i++) {
+            let team = dataset[i].Player.Squad;
+            dataset[i].color = this.teamColors.get(team);
+        }
+        
         this.setState({ ...this.state, data: dataset });
     }
 
@@ -174,8 +197,7 @@ class Circles extends React.Component {
                         imageUrl: this.logos[player.Squad], 
                         imageHeight: 100
                     
-                    }); //Make sure to npm install sweetalert2 for this to work ----------------
-                    this.setColor(i);
+                    });
                 };
 
                 return (
