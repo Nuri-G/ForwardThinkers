@@ -207,6 +207,7 @@ class Circles extends React.Component {
                     tooltip.style.position = 'absolute';
                     tooltip.style.left = e.pageX + 'px';
                     tooltip.style.top = e.pageY + 'px';
+                    tooltip.style.userSelect = 'none';
                     document.body.appendChild(tooltip);
 
                     const handleMouseLeave = () => {
