@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.Axis-Select {
+  display: inline-block;
+  width: 50%;
+}
