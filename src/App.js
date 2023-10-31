@@ -226,7 +226,7 @@ class Circles extends React.Component {
             return Object.values(overlappingDataPoints).map((group, i) => {
                 const { player, x, y, color, xAxisName, yAxisName, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
 
-                const handleClick = () => {
+                const handleClick = (e) => {
                     // Show a modal or do something with the data for this group of data points.
                     const modalContent = group.map((data) => {
                         const { player: groupPlayer, color: groupColor, xAxisName, yAxisName, xAxisValue, yAxisValue } = data;
@@ -246,8 +246,8 @@ class Circles extends React.Component {
                     tooltip.className = 'tooltip';
                     tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
                     tooltip.style.position = 'absolute';
-                    tooltip.style.left = e.pageX + 'px';
-                    tooltip.style.top = e.pageY + 'px';
+                    tooltip.style.left = e.pageX+10 + 'px';
+                    tooltip.style.top = e.pageY+10 + 'px';
                     tooltip.style.userSelect = 'none';
                     document.body.appendChild(tooltip);
                 
