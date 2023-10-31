@@ -61,7 +61,10 @@ class Circles extends React.Component {
                 processedData.push(processedLine);
             }
 
-            this.setState({ ...this.state, data: processedData });
+            this.setState({ ...this.state, data: processedData }, () => {
+                this.updateAxis('xAxis', 'Gls');
+                this.updateAxis('yAxis', 'Gls');
+            });
         })
     }
 
@@ -71,15 +74,29 @@ class Circles extends React.Component {
         this.setState({ ...this.state, data: dataset });
     }
 
+    updateAxis(axis, value) {
+        let newState = this.state;
+        let data = this.state.data.map(a => a['Performance'][value]);
+        let min = Math.min.apply(0, data) - 0.5;
+        let max = Math.max.apply(0, data) + 0.5;
+
+        if(axis === 'xAxis') {
+            newState.xMax = max;
+            newState.xMin = min;
+        } else if(axis === 'yAxis') {
+            newState.yMax = max;
+            newState.yMin = min;
+        }
+
+        newState[axis] = value;
+        this.setState(newState);
+    }
+
     createDropdown(axis) {
         if (this.state != null && this.state.data != null && this.state.data.length > 0) {
             let labels = Object.keys(this.state.data[0]['Performance']);
             return ( //So either this dropdown is for just the y-axis (since we could keep the x-axis as minutes played) or we have two dropdowns
-                <select onChange={(e) => {
-                    let newState = this.state;
-                    newState[axis] = e.target.value;
-                    this.setState(newState);
-                }}>
+                <select onChange={(e) => this.updateAxis(axis, e.target.value)}>
                     <optgroup label={'Select the ' + axis}>
                         {labels.map((option, i) => {
                             return (
