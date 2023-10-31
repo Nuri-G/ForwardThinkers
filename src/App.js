@@ -3,6 +3,25 @@ import React from 'react';
 import Papa from "papaparse";
 import swal from 'sweetalert2'; // NEED TO npm install sweetalert2 ------------- IMPORTANT!!!!!!!
 
+function hexagonCoords(x, y, radius) {
+    let angle = 0;
+    let out = '';
+
+    for(let i = 0; i < 6; i++) {
+        let angleX = Math.cos(angle) * radius;
+        let angleY = Math.sin(angle) * radius;
+
+        if(i > 0) {
+            out += ' ';
+        }
+        out += (x + angleX) + ',' + (y + angleY);
+
+        angle += Math.PI / 3;
+    }
+
+    return out;
+}
+
 async function fetchFile(filename) {
     const response = await fetch(filename);
     const reader = response.body.getReader();
@@ -134,9 +153,8 @@ class Circles extends React.Component {
                 };
 
                 return (
-                    <circle
-                        cx={x}
-                        cy={y}
+                    <polygon
+                        points={hexagonCoords(x, y, 1)}
                         key={i}
                         r=".5" //Maybe should tweak size of circles because of the number of them
                         fill={color}
