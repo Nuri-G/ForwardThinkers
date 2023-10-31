@@ -188,7 +188,7 @@ class Circles extends React.Component {
                 const performance = line['Performance'];
                 const coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis]);
                 const player = line['Player'];
-                if(!(this.state.activeTeams.size === 0) && !this.state.activeTeams.has(player.Squad)) {
+                if (!(this.state.activeTeams.size === 0) && !this.state.activeTeams.has(player.Squad)) {
                     return null;
                 }
                 const x = coords.x;
@@ -212,7 +212,7 @@ class Circles extends React.Component {
 
             // Iterate through the data points and group them by (x, y) coordinates
             dataPoints.forEach((dataPoint) => {
-                if(dataPoint === null) return;
+                if (dataPoint === null) return;
                 const { x, y } = dataPoint;
                 const key = `${x}-${y}`;
 
@@ -227,18 +227,51 @@ class Circles extends React.Component {
                 const { player, x, y, color, xAxisName, yAxisName, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
 
                 const handleClick = (e) => {
-                    // Show a modal or do something with the data for this group of data points.
-                    const modalContent = group.map((data) => {
-                        const { player: groupPlayer, color: groupColor, xAxisName, yAxisName, xAxisValue, yAxisValue } = data;
-                        return `${groupPlayer.Player} (Team: ${groupPlayer.Squad}, ${xAxisName}: ${xAxisValue}, ${yAxisName}: ${yAxisValue})`
-                    }).join('\n');
+                    const firstData = group[0];
+                    const { player: groupPlayer, color: groupColor, xAxisName, yAxisName, xAxisValue, yAxisValue } = firstData;
+                    const modalContent = `${groupPlayer.Player} (Team: ${groupPlayer.Squad}, ${xAxisName}: ${xAxisValue}, ${yAxisName}: ${yAxisValue})`;
 
-                    swal.fire({
-                        title: 'Players at ' + xAxisValue + ' ' + xAxisName + ', ' + yAxisValue + ' ' + yAxisName,
-                        text: modalContent,
-                        imageUrl: this.logos[player.Squad],
-                        imageHeight: 100,
-                    });
+                    let currentIndex = 0;
+
+                    const showModal = (index) => {
+                        const currentPlayer = group[index];
+
+                        if (currentPlayer) {
+                            const { player, xAxisName, yAxisName, xAxisValue, yAxisValue } = currentPlayer;
+                            const modalContent = `Team: ${player.Squad} ${xAxisName}: ${xAxisValue} ${yAxisName}: ${yAxisValue}`;
+                            const isPreviousDisabled = index === 0;  // Disable "Previous" when at the first data point
+                            const isNextDisabled = index === group.length - 1;
+
+                            swal.fire({
+                                title: player.Player,
+                                text: modalContent,
+                                imageUrl: this.logos[player.Squad],
+                                imageHeight: 100,
+                                showCloseButton: true,
+                                showCancelButton: !isPreviousDisabled,
+                                showConfirmButton: !isNextDisabled,
+                                confirmButtonText: 'Next',
+                                cancelButtonText: 'Previous',
+                                cancelButtonColor: '#7066e0',
+                                footer: `Showing: ${index + 1} of ${group.length}`,
+                                customClass: {
+                                    actions: 'my-actions',
+                                    cancelButton: 'order-1',
+                                    confirmButton: 'order-2'
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    swal.close(); // Close the current modal
+                                    showModal(index + 1);
+                                } else {
+                                    swal.close(); // Close the current modal
+                                    showModal(index - 1);
+                                }
+                            });
+                        }
+                    };
+
+                    showModal(currentIndex);
                 };
 
                 const handleHover = (e) => {
@@ -246,16 +279,16 @@ class Circles extends React.Component {
                     tooltip.className = 'tooltip';
                     tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
                     tooltip.style.position = 'absolute';
-                    tooltip.style.left = e.pageX+10 + 'px';
-                    tooltip.style.top = e.pageY+10 + 'px';
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY + 10 + 'px';
                     tooltip.style.userSelect = 'none';
                     document.body.appendChild(tooltip);
-                
+
                     const handleMouseLeave = () => {
                         document.body.removeChild(tooltip);
                         e.target.removeEventListener('mouseleave', handleMouseLeave);
                     };
-                
+
                     e.target.addEventListener('mouseleave', handleMouseLeave);
                 };
 
@@ -283,7 +316,7 @@ class Circles extends React.Component {
             this.loadDataset("./data/2022-2023.csv");
         }
 
-        let options = [...this.teamColors.keys()].map(a => {return {'value': a, 'label': a}});
+        let options = [...this.teamColors.keys()].map(a => { return { 'value': a, 'label': a } });
         return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
                 {this.createDropdown("xAxis")}
@@ -295,7 +328,7 @@ class Circles extends React.Component {
                 </svg>
                 <Select placeholder="Filter Teams..." isMulti options={options} onChange={(values, labels) => {
                     let activeTeams = new Set(values.map(a => a.value));
-                    this.setState({...this.state, activeTeams: activeTeams});
+                    this.setState({ ...this.state, activeTeams: activeTeams });
                 }} />
             </div>
 
@@ -304,7 +337,7 @@ class Circles extends React.Component {
 
 
     renderXAxis() {
-        if(this.state.data === null) return;
+        if (this.state.data === null) return;
         const data = this.state.data;
         const xAxisProperty = this.state.xAxis;
         const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
@@ -344,7 +377,7 @@ class Circles extends React.Component {
 
 
     renderYAxis() {
-        if(this.state.data === null) return;
+        if (this.state.data === null) return;
         const data = this.state.data;
         const xAxisProperty = this.state.xAxis;
         const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
