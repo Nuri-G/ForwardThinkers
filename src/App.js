@@ -37,6 +37,7 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
+        this.selectedYear= "2022-2023";
         this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15, activeTeams: new Set() } // Updated
         this.teamInfo = {
             "Arsenal": {
@@ -263,7 +264,10 @@ class Circles extends React.Component {
         }
     }
 
-
+    loadDatasetForSelectedYear() {
+        const filename = `./data/${this.state.selectedYear}.csv`;
+        this.loadDataset(filename);
+    }
 
     render() {
         if (!this.loading) {
@@ -272,8 +276,20 @@ class Circles extends React.Component {
         }
 
         let options = [...Object.keys(this.teamInfo)].map(a => {return {'value': a, 'label': a}});
+        let yearoptions = [{ value: "2019-2020", label: "2019-2020" },
+        { value: "2020-2021", label: "2020-2021" },{ value: "2021-2022", label: "2021-2022" },
+        { value: "2022-2023", label: "2022-2023" }, { value: "2023-2024", label: "2023-2024" }]
+
         return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
+                <Select placeholder = "Select Year..."
+                options={yearoptions}
+                onChange={(selectedOption) => {
+                    this.setState(
+                        { ...this.state, selectedYear: selectedOption.value, data: null },
+                        () => this.loadDatasetForSelectedYear(selectedOption.value)
+                    );
+                }}/>
                 {this.createDropdown("xAxis")}
                 {this.createDropdown("yAxis")}
                 <svg viewBox="0 0 100 50" style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px'}}>
