@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  padding: 6px;
 }
 
 .App-logo {
@@ -35,4 +36,15 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.Axis-Select {
+  display: inline-block;
+  width: 50%;
+}
+
+.Title {
+  font-size: 2em;
+  text-align: center;
+  margin: 0;
 }

@@ -166,19 +166,9 @@ class Circles extends React.Component {
     createDropdown(axis) {
         if (this.state != null && this.state.data != null && this.state.data.length > 0) {
             let labels = Object.keys(this.state.data[0]['Performance']);
-            return ( //So either this dropdown is for just the y-axis (since we could keep the x-axis as minutes played) or we have two dropdowns
-                <select onChange={(e) => this.updateAxis(axis, e.target.value)}>
-                    <optgroup label={'Select the ' + axis}>
-                        {labels.map((option, i) => {
-                            return (
-                                <option key={i} value={option}>
-                                    {option}
-                                </option>
-                            )
-                        })}
-                    </optgroup>
-                </select>
-            )
+            let options = [...labels].map(a => {return {'value': a, 'label': a}});
+
+            return (<Select className='Axis-Select' placeholder={"Select the " + axis} options={options} onChange={(value, label) => {this.updateAxis(axis, value.value)}} />)
         }
     }
 
@@ -269,7 +259,6 @@ class Circles extends React.Component {
                         fill={color}
                         onClick={handleClick}
                         onMouseEnter={handleHover}
-                    //onMouseLeave={handleMouseLeave}
                     />
                 );
             });
@@ -304,7 +293,7 @@ class Circles extends React.Component {
                 }}/>
                 {this.createDropdown("xAxis")}
                 {this.createDropdown("yAxis")}
-                <svg viewBox="0 0 100 50" style={{ border: '3px solid black', margin: '5px' }}>
+                <svg viewBox="0 0 100 50" style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px'}}>
                     {this.createChart()}
                     {this.renderXAxis()}
                     {this.renderYAxis()}
