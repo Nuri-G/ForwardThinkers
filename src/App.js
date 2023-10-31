@@ -142,7 +142,7 @@ class Circles extends React.Component {
                 let y = coords.y;
                 let color = line.color;
 
-                const handleClick = () => {
+                const handleClick = (e) => {
                     swal.fire({title: player.Player, text: 'Team: ' + player.Squad + 
                         '\nGoals: ' + performance.Gls + '\nAssists: ' + performance.Ast,
                         imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
@@ -152,14 +152,34 @@ class Circles extends React.Component {
                     this.setColor(i);
                 };
 
+                const handleHover = (e) => {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${performance.Gls}<br />Assists: ${performance.Ast}`;
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.left = e.pageX + 'px';
+                    tooltip.style.top = e.pageY + 'px';
+                    document.body.appendChild(tooltip);
+
+                    const handleMouseLeave = () => {
+                        document.body.removeChild(tooltip);
+                        e.target.removeEventListener('mouseleave', handleMouseLeave); // Remove the event listener
+                    };
+
+                    e.target.addEventListener('mouseleave', handleMouseLeave);
+                };
+
+
                 return (
                     <polygon
-                        points={hexagonCoords(x, y, 1)}
-                        key={i}
-                        r=".5" //Maybe should tweak size of circles because of the number of them
-                        fill={color}
-                        onClick={handleClick}
-                    />
+                                points={hexagonCoords(x, y, 1)}
+                                key={i}
+                                r=".5"
+                                fill={color}
+                                onClick={handleClick}
+                                onMouseEnter={handleHover}
+                                //onMouseLeave={handleMouseLeave}
+                     />
                 );
             });
         }
