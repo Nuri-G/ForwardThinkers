@@ -201,8 +201,6 @@ class Circles extends React.Component {
                 {this.createDropdown("xAxis")}
                 {this.createDropdown("yAxis")}
                 <svg viewBox="0 0 100 50" style={{ border: '3px solid black', margin: '5px' }}>
-                    <line x1={width / 2} y1="0" x2={width / 2} y2={height} stroke="black" strokeWidth="0.1" />
-                    <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="0.1" />
                     {this.createChart()}
                     {this.renderXAxis()}
                     {this.renderYAxis()}
@@ -217,14 +215,17 @@ class Circles extends React.Component {
         const data = this.state.data;
         const xAxisProperty = this.state.xAxis;
         const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
+        const yAxisProperty = this.state.yAxis;
+        const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
         const xMax = Math.max(...xValues);
         const xMin = Math.min(...xValues);
         const tickCount = xMax - xMin + 1; // You can adjust this based on your requirements
-        const xAverage = xValues.reduce((acc, val) => acc + val, 0) / xValues.length;
+        const yAverage = yValues.reduce((acc, val) => acc + val, 0) / yValues.length;
+        const axisCoordinate = this.toPlotCoords(0, yAverage).y;
 
         return (
             <g>
-                <line x1={0} y1={this.height / 2} x2={this.width} y2={this.height / 2} stroke="black" strokeWidth="0.1" />
+                <line x1={0} y1={axisCoordinate} x2={this.width} y2={axisCoordinate} stroke="black" strokeWidth="0.1" />
                 {Array.from({ length: tickCount }).map((_, i) => {
                     const value = xMin + i; // Calculate the tick value as a whole number
                     const { x } = this.toPlotCoords(value, 0); // Convert value to screen coordinates
@@ -232,13 +233,13 @@ class Circles extends React.Component {
                     if (i % 2 === 0) {
                         return (
                             <g key={i}>
-                                <line x1={x} y1={this.height / 2 - 1} x2={x} y2={this.height / 2 + 1} stroke="black" strokeWidth="0.1" />
-                                <text x={x} y={this.height / 2 + 3} fontSize="1" textAnchor="middle">{value}</text>
+                                <line x1={x} y1={axisCoordinate - 1} x2={x} y2={axisCoordinate + 1} stroke="black" strokeWidth="0.1" />
+                                <text x={x} y={axisCoordinate + 3} fontSize="1" textAnchor="middle">{value}</text>
                             </g>
                         );
                     } else {
                         return (
-                            <line x1={x} y1={this.height / 2 - 0.5} x2={x} y2={this.height / 2 + 0.5} stroke="black" strokeWidth="0.1" key={i} />
+                            <line x1={x} y1={axisCoordinate - 0.5} x2={x} y2={axisCoordinate + 0.5} stroke="black" strokeWidth="0.1" key={i} />
                         );
                     }
                 })}
@@ -251,16 +252,19 @@ class Circles extends React.Component {
 
     renderYAxis() {
         const data = this.state.data;
+        const xAxisProperty = this.state.xAxis;
+        const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
         const yAxisProperty = this.state.yAxis;
         const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
         const yMax = Math.max(...yValues);
         const yMin = Math.min(...yValues);
         const tickCount = yMax - yMin + 1; // You can adjust this based on your requirements
-        const yAverage = yValues.reduce((acc, val) => acc + val, 0) / yValues.length;
+        const xAverage = xValues.reduce((acc, val) => acc + val, 0) / xValues.length;
+        const axisCoordinate = this.toPlotCoords(xAverage, 0).x;
 
         return (
             <g>
-                <line x1={this.width / 2} y1={0} x2={this.width / 2} y2={this.height} stroke="black" strokeWidth="0.1" />
+                <line x1={axisCoordinate} y1={0} x2={axisCoordinate} y2={this.height} stroke="black" strokeWidth="0.1" />
                 {Array.from({ length: tickCount }).map((_, i) => {
                     const value = yMin + i; // Calculate the tick value as a whole number
                     const { y } = this.toPlotCoords(0, value); // Convert value to screen coordinates
@@ -268,13 +272,13 @@ class Circles extends React.Component {
                     if (i % 2 === 0) {
                         return (
                             <g key={i}>
-                                <line x1={this.width / 2 - 1} y1={y} x2={this.width / 2 + 1} y2={y} stroke="black" strokeWidth="0.1" />
-                                <text x={this.width / 2 - 1.5} y={y + 0.5} fontSize="1" textAnchor="end">{value}</text>
+                                <line x1={axisCoordinate - 1} y1={y} x2={axisCoordinate + 1} y2={y} stroke="black" strokeWidth="0.1" />
+                                <text x={axisCoordinate - 1.5} y={y + 0.5} fontSize="1" textAnchor="end">{value}</text>
                             </g>
                         );
                     } else {
                         return (
-                            <line x1={this.width / 2 - 0.5} y1={y} x2={this.width / 2 + 0.5} y2={y} stroke="black" strokeWidth="0.1" key={i} />
+                            <line x1={axisCoordinate - 0.5} y1={y} x2={axisCoordinate + 0.5} y2={y} stroke="black" strokeWidth="0.1" key={i} />
                         );
                     }
                 })}
