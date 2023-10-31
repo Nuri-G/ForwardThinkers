@@ -155,37 +155,106 @@ class Circles extends React.Component {
 
 
 
+    // createChart() {
+    //     if (this.state != null && this.state.data != null) {
+    //         return this.state.data.map((line, i) => {
+    //             let performance = line['Performance'];
+    //             let coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis])
+    //             let player = line['Player'];
+    //             let x = coords.x;
+    //             let y = coords.y;
+    //             let color = line.color;
+
+    //             const handleClick = () => {
+    //                 swal.fire({title: player.Player, text: 'Team: ' + player.Squad + 
+    //                     '\nGoals: ' + performance.Gls + '\nAssists: ' + performance.Ast,
+    //                     imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
+    //                     imageHeight: 100
+                    
+    //                 });
+    //             };
+
+    //             return (
+    //                 <polygon
+    //                     points={hexagonCoords(x, y, 1)}
+    //                     key={i}
+    //                     r=".5" //Maybe should tweak size of circles because of the number of them
+    //                     fill={color}
+    //                     onClick={handleClick}
+    //                 />
+    //             );
+    //         });
+    //     }
+    // }
+
     createChart() {
         if (this.state != null && this.state.data != null) {
-            return this.state.data.map((line, i) => {
-                let performance = line['Performance'];
-                let coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis])
-                let player = line['Player'];
-                let x = coords.x;
-                let y = coords.y;
-                let color = line.color;
-
-                const handleClick = () => {
-                    swal.fire({title: player.Player, text: 'Team: ' + player.Squad + 
-                        '\nGoals: ' + performance.Gls + '\nAssists: ' + performance.Ast,
-                        imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg", 
-                        imageHeight: 100
-                    
-                    });
-                };
-
-                return (
-                    <polygon
-                        points={hexagonCoords(x, y, 1)}
-                        key={i}
-                        r=".5" //Maybe should tweak size of circles because of the number of them
-                        fill={color}
-                        onClick={handleClick}
-                    />
-                );
-            });
+          const dataPoints = this.state.data.map((line, i) => {
+            const performance = line['Performance'];
+            const coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis]);
+            const player = line['Player'];
+            const x = coords.x;
+            const y = coords.y;
+            const color = line.color;
+      
+            return {
+              player: player,
+              x: x,
+              y: y,
+              color: color,
+              xAxisName: this.state.xAxis,
+              yAxisName: this.state.yAxis,
+              xAxisValue: performance[this.state.xAxis],
+              yAxisValue: performance[this.state.yAxis]
+            };
+          });
+      
+          // Create an object to store data points with the same (x, y) coordinates
+          const overlappingDataPoints = {};
+      
+          // Iterate through the data points and group them by (x, y) coordinates
+          dataPoints.forEach((dataPoint) => {
+            const { x, y } = dataPoint;
+            const key = `${x}-${y}`;
+      
+            if (!overlappingDataPoints[key]) {
+              overlappingDataPoints[key] = [dataPoint];
+            } else {
+              overlappingDataPoints[key].push(dataPoint);
+            }
+          });
+      
+          return Object.values(overlappingDataPoints).map((group, i) => {
+            const { player, x, y, color, xAxisName, yAxisName, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
+      
+            const handleClick = () => {
+              // Show a modal or do something with the data for this group of data points.
+              const modalContent = group.map((data) => {
+                const { player: groupPlayer, color: groupColor, xAxisName, yAxisName, xAxisValue, yAxisValue } = data;
+                return `${groupPlayer.Player} (Team: ${groupPlayer.Squad}, ${xAxisName}: ${xAxisValue}, ${yAxisName}: ${yAxisValue})`;
+              }).join('\n');
+      
+              swal.fire({
+                title: 'Players at ' + xAxisValue + ' ' + xAxisName + ', ' + yAxisValue + ' ' + yAxisName,
+                text: modalContent,
+                imageUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg",
+                imageHeight: 100,
+              });
+            };
+      
+            return (
+              <polygon
+                points={hexagonCoords(x, y, 1)}
+                key={i}
+                r=".5"
+                fill={color}
+                onClick={handleClick}
+              />
+            );
+          });
         }
-    }
+      }
+      
 
 
     render() {
