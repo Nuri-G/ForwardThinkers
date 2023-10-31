@@ -2,7 +2,6 @@ import './App.css';
 import React from 'react';
 import Papa from "papaparse";
 import swal from 'sweetalert2';
-import randomColor from 'randomcolor';
 import Select from 'react-select';
 
 function hexagonCoords(x, y, radius) {
@@ -38,35 +37,63 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.teamColors = new Map();
+        this.selectedYear= "2022-2023";
         this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15, activeTeams: new Set() } // Updated
-        this.logos = {
-            "Arsenal": "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg",
-            "Aston Villa": "https://static.vecteezy.com/system/resources/previews/015/863/703/original/aston-villa-logo-on-transparent-background-free-vector.jpg",
-            "Bournemouth": "https://1000logos.net/wp-content/uploads/2018/07/AFC-Bournemouth-logo.jpg",
-            "Brentford": "https://static.vecteezy.com/system/resources/previews/015/863/708/original/brentford-logo-on-transparent-background-free-vector.jpg",
-            "Brighton": "https://1000logos.net/wp-content/uploads/2018/07/Brighton-Hove-Albion-logo.jpg",
-            "Burnley": "https://1000logos.net/wp-content/uploads/2021/02/Burnley-logo.jpg",
-            "Chelsea": "https://i.pinimg.com/474x/46/a2/7f/46a27f96e154a5d64bdf06747c534fa6.jpg",
-            "Crystal Palace": "https://static.vecteezy.com/system/resources/previews/026/135/395/non_2x/crystal-palace-club-logo-black-and-white-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
-            "Everton": "https://logowik.com/content/uploads/images/everton-football-club4785.jpg",
-            "Fulham": "https://s3.eu-west-1.amazonaws.com/gc-media-assets.fulhamfc.com/07a09500-8e25-11ea-b943-87fee4c4ba25.jpg",
-            "Liverpool": "https://logos-world.net/wp-content/uploads/2020/06/Liverpool-Logo-1955-1968.jpg",
-            "Luton Town": "https://www.hdwallpapers.in/download/emblem_logo_soccer_white_background_hd_luton_town_f_c-HD.jpg",
-            "Manchester City": "https://i.pinimg.com/originals/3d/f7/e9/3df7e96bfafffcb2878b3b0c66e7af65.jpg",
-            "Manchester Utd": "https://i.pinimg.com/originals/05/64/e2/0564e2514b9d8694cc8a34d04963e1a4.png",
-            "Newcastle Utd": "https://logowik.com/content/uploads/images/744_newcastle_united_logo.jpg",
-            "Nott'ham Forest": "https://i.pinimg.com/originals/68/0f/fa/680ffadd5aa7d0164592c231864d5122.jpg",
-            "Sheffield Utd": "https://logowik.com/content/uploads/images/sheffield-united-fc1129.jpg",
-            "Tottenham": "https://1000logos.net/wp-content/uploads/2018/06/Tottenham-Hotspur-2006.jpg",
-            "West Ham": "https://static.vecteezy.com/system/resources/previews/026/135/477/original/west-ham-united-club-logo-black-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
-            "Wolves": "https://logowik.com/content/uploads/images/wolverhampton-wanderers-fc8015.jpg",
-            "Leicester City": "https://i.ytimg.com/vi/_0-hi3l60UU/maxresdefault.jpg",
-            "Leeds United": "https://images.alphacoders.com/115/1157439.png",
-            "Southampton": "https://logowik.com/content/uploads/images/840_southamptonfc.jpg",
-            "Watford": "https://www.watfordfc.com/storage/12239/conversions/Badge-8---Current-Crest-landscape_image.jpg",
-            "West Brom": "https://1000logos.net/wp-content/uploads/2018/07/West-Bromwich-Albion-Logo-2000.jpg",
-            "Norwich City": "https://logowik.com/content/uploads/images/norwich-city7754.jpg"
+        this.teamInfo = {
+            "Arsenal": {
+                logoUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg",
+                color: "#EF0107"
+            },
+            "Aston Villa": {logoUrl: "https://static.vecteezy.com/system/resources/previews/015/863/703/original/aston-villa-logo-on-transparent-background-free-vector.jpg", 
+                color: "#670E36"},
+            "Bournemouth": {logoUrl: "https://1000logos.net/wp-content/uploads/2018/07/AFC-Bournemouth-logo.jpg", 
+                color: "#8b0304"},
+            "Brentford": {logoUrl: "https://static.vecteezy.com/system/resources/previews/015/863/708/original/brentford-logo-on-transparent-background-free-vector.jpg", 
+                color: "#e30613"},
+            "Brighton": {logoUrl: "https://1000logos.net/wp-content/uploads/2018/07/Brighton-Hove-Albion-logo.jpg", 
+                color: "#005daa"},
+            "Burnley": {logoUrl: "https://1000logos.net/wp-content/uploads/2021/02/Burnley-logo.jpg", 
+                color: "#6b733d"},
+            "Chelsea": {logoUrl: "https://i.pinimg.com/474x/46/a2/7f/46a27f96e154a5d64bdf06747c534fa6.jpg", 
+                color: "#034694"},
+            "Crystal Palace": {logoUrl: "https://static.vecteezy.com/system/resources/previews/026/135/395/non_2x/crystal-palace-club-logo-black-and-white-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg", 
+                color: "#1b458f"},
+            "Everton": {logoUrl: "https://logowik.com/content/uploads/images/everton-football-club4785.jpg", 
+                color: "#274488"},
+            "Fulham": {logoUrl: "https://s3.eu-west-1.amazonaws.com/gc-media-assets.fulhamfc.com/07a09500-8e25-11ea-b943-87fee4c4ba25.jpg", 
+                color: "#000000"},
+            "Liverpool": {logoUrl: "https://logos-world.net/wp-content/uploads/2020/06/Liverpool-Logo-1955-1968.jpg", 
+                color: "#008875"},
+            "Luton Town": {logoUrl: "https://www.hdwallpapers.in/download/emblem_logo_soccer_white_background_hd_luton_town_f_c-HD.jpg", 
+                color: "##F78F1E"},
+            "Manchester City": {logoUrl: "https://i.pinimg.com/originals/3d/f7/e9/3df7e96bfafffcb2878b3b0c66e7af65.jpg", 
+                color: "#97c1e7"},
+            "Manchester Utd": {logoUrl: "https://i.pinimg.com/originals/05/64/e2/0564e2514b9d8694cc8a34d04963e1a4.png", 
+                color: "#da030e"},
+            "Newcastle Utd": {logoUrl: "https://logowik.com/content/uploads/images/744_newcastle_united_logo.jpg", 
+                color: "#f0b83d"},
+            "Nott'ham Forest": {logoUrl: "https://i.pinimg.com/originals/68/0f/fa/680ffadd5aa7d0164592c231864d5122.jpg", 
+                color: "#e53233"},
+            "Sheffield Utd": {logoUrl: "https://logowik.com/content/uploads/images/sheffield-united-fc1129.jpg", 
+                color: "#ccff00"},
+            "Tottenham": {logoUrl: "https://1000logos.net/wp-content/uploads/2018/06/Tottenham-Hotspur-2006.jpg", 
+                color: "#132257"},
+            "West Ham": {logoUrl: "https://static.vecteezy.com/system/resources/previews/026/135/477/original/west-ham-united-club-logo-black-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg", 
+                color: "#7c2c3b"},
+            "Wolves": {logoUrl: "https://logowik.com/content/uploads/images/wolverhampton-wanderers-fc8015.jpg", 
+                color: "#fdb913"},
+            "Leicester City": {logoUrl: "https://i.ytimg.com/vi/_0-hi3l60UU/maxresdefault.jpg", 
+                color: "##003090"},
+            "Leeds United": {logoUrl: "https://images.alphacoders.com/115/1157439.png", 
+                color: "##1D428A"},
+            "Southampton": {logoUrl: "https://logowik.com/content/uploads/images/840_southamptonfc.jpg", 
+                color: "#ffc40d"},
+            "Watford": {logoUrl: "https://www.watfordfc.com/storage/12239/conversions/Badge-8---Current-Crest-landscape_image.jpg", 
+                color: "#ed2127"},
+            "West Brom": {logoUrl: "https://1000logos.net/wp-content/uploads/2018/07/West-Bromwich-Albion-Logo-2000.jpg", 
+                color: "#060067"},
+            "Norwich City": {logoUrl: "https://logowik.com/content/uploads/images/norwich-city7754.jpg", 
+                color: "#00a650"}
         };
     }
 
@@ -113,35 +140,8 @@ class Circles extends React.Component {
             this.setState({ ...this.state, data: processedData }, () => {
                 this.updateAxis('xAxis', 'Gls');
                 this.updateAxis('yAxis', 'Gls');
-                this.setTeamColors();
             });
         })
-    }
-
-    setTeamColors() {
-        let dataset = this.state.data;
-
-        let teamNames = new Set();
-        for (let player of dataset) {
-            teamNames.add(player.Player.Squad);
-        }
-
-        let colors = randomColor({
-            count: teamNames.size,
-        });
-
-        let i = 0;
-        for (let team of teamNames) {
-            this.teamColors.set(team, colors[i]);
-            i++;
-        }
-
-        for (let i = 0; i < dataset.length; i++) {
-            let team = dataset[i].Player.Squad;
-            dataset[i].color = this.teamColors.get(team);
-        }
-
-        this.setState({ ...this.state, data: dataset });
     }
 
     updateAxis(axis, value) {
@@ -165,19 +165,9 @@ class Circles extends React.Component {
     createDropdown(axis) {
         if (this.state != null && this.state.data != null && this.state.data.length > 0) {
             let labels = Object.keys(this.state.data[0]['Performance']);
-            return ( //So either this dropdown is for just the y-axis (since we could keep the x-axis as minutes played) or we have two dropdowns
-                <select onChange={(e) => this.updateAxis(axis, e.target.value)}>
-                    <optgroup label={'Select the ' + axis}>
-                        {labels.map((option, i) => {
-                            return (
-                                <option key={i} value={option}>
-                                    {option}
-                                </option>
-                            )
-                        })}
-                    </optgroup>
-                </select>
-            )
+            let options = [...labels].map(a => {return {'value': a, 'label': a}});
+
+            return (<Select className='Axis-Select' placeholder={"Select the " + axis} options={options} onChange={(value, label) => {this.updateAxis(axis, value.value)}} />)
         }
     }
 
@@ -193,7 +183,7 @@ class Circles extends React.Component {
                 }
                 const x = coords.x;
                 const y = coords.y;
-                const color = line.color;
+                const color = this.teamInfo[player.Squad].color;
 
                 return {
                     player: player,
@@ -245,7 +235,7 @@ class Circles extends React.Component {
                             swal.fire({
                                 title: player.Player,
                                 text: modalContent,
-                                imageUrl: this.logos[player.Squad],
+                                imageUrl: this.teamInfo[player.Squad].logoUrl,
                                 imageHeight: 100,
                                 showCloseButton: true,
                                 showCancelButton: !isPreviousDisabled,
@@ -301,14 +291,16 @@ class Circles extends React.Component {
                         fill={color}
                         onClick={handleClick}
                         onMouseEnter={handleHover}
-                    //onMouseLeave={handleMouseLeave}
                     />
                 );
             });
         }
     }
 
-
+    loadDatasetForSelectedYear() {
+        const filename = `./data/${this.state.selectedYear}.csv`;
+        this.loadDataset(filename);
+    }
 
     render() {
         if (!this.loading) {
@@ -316,12 +308,24 @@ class Circles extends React.Component {
             this.loadDataset("./data/2022-2023.csv");
         }
 
-        let options = [...this.teamColors.keys()].map(a => { return { 'value': a, 'label': a } });
+        let options = [...Object.keys(this.teamInfo)].map(a => {return {'value': a, 'label': a}});
+        let yearoptions = [{ value: "2019-2020", label: "2019-2020" },
+        { value: "2020-2021", label: "2020-2021" },{ value: "2021-2022", label: "2021-2022" },
+        { value: "2022-2023", label: "2022-2023" }, { value: "2023-2024", label: "2023-2024" }]
+
         return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
+                <Select placeholder = "Select Year..."
+                options={yearoptions}
+                onChange={(selectedOption) => {
+                    this.setState(
+                        { ...this.state, selectedYear: selectedOption.value, data: null },
+                        () => this.loadDatasetForSelectedYear(selectedOption.value)
+                    );
+                }}/>
                 {this.createDropdown("xAxis")}
                 {this.createDropdown("yAxis")}
-                <svg viewBox="0 0 100 50" style={{ border: '3px solid black', margin: '5px' }}>
+                <svg viewBox="0 0 100 50" style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px'}}>
                     {this.createChart()}
                     {this.renderXAxis()}
                     {this.renderYAxis()}
