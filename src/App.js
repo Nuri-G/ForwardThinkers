@@ -257,8 +257,7 @@ class Circles extends React.Component {
                         r=".5"
                         fill={color}
                         onClick={handleClick}
-                        //onMouseEnter={handleHover}
-                    //onMouseLeave={handleMouseLeave}
+                        onMouseEnter={handleHover}
                     />
                 );
             });
