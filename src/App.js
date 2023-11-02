@@ -313,6 +313,8 @@ class Circles extends React.Component {
             this.loadDataset("./data/2022-2023.csv");
         }
 
+        if (this.state.activeData === null) return;
+
         let options = [...Object.keys(this.teamInfo)].map(a => {return {'value': a, 'label': a}});
         let yearoptions = [{ value: "2019-2020", label: "2019-2020" },
         { value: "2020-2021", label: "2020-2021" },{ value: "2021-2022", label: "2021-2022" },
