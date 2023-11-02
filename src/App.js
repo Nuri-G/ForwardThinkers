@@ -39,7 +39,7 @@ class Circles extends React.Component {
         this.loading = false;
         this.selectedYear = "2022-2023";
         this.data = null;
-        this.state = { activeData: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 38, xAverage: 1, yMin: 0, yMax: 15, yAverage: 1 } // Updated
+        this.state = { activeData: null, xAxis: "Gls", yAxis: "Ast"} // Updated
         this.teamInfo = {
             "Arsenal": {
                 logoUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg",
@@ -99,8 +99,8 @@ class Circles extends React.Component {
     }
 
     toPlotCoords(x, y) {
-        let newX = ((x - this.state.xMin) / (this.state.xMax - this.state.xMin)) * this.width;
-        let newY = 50 - ((y - this.state.yMin) / (this.state.yMax - this.state.yMin)) * this.height;
+        let newX = ((x - this.minX()) / (this.maxX() - this.minX())) * this.width;
+        let newY = 50 - ((y - this.minY()) / (this.maxY() - this.minY())) * this.height;
         return {
             'x': newX,
             'y': newY,
@@ -139,32 +139,44 @@ class Circles extends React.Component {
             }
 
             this.data = processedData;
-            this.setState({ ...this.state, activeData: processedData }, () => {
-                this.updateAxis('xAxis', this.state.xAxis);
-                this.updateAxis('yAxis', this.state.yAxis);
-            });
+            this.setState({ ...this.state, activeData: processedData });
         })
     }
 
-    updateAxis(axis, value) {
-        let newState = this.state;
-        let data = this.state.activeData.map(a => a['Performance'][value]);
-        let min = Math.min(...data) - 1;
-        let max = Math.max(...data) + 1;
-        let average = data.reduce((acc, val) => Number(acc) + Number(val)) / data.length;
+    activeDataX() {
+        return this.state.activeData.map(a => a['Performance'][this.state.xAxis]);
+    }
 
-        if (axis === 'xAxis') {
-            newState.xMax = max;
-            newState.xMin = min;
-            newState.xAverage = average;
-        } else if (axis === 'yAxis') {
-            newState.yMax = max;
-            newState.yMin = min;
-            newState.yAverage = average;
-        }
+    activeDataY() {
+        return this.state.activeData.map(a => a['Performance'][this.state.yAxis]);
+    }
 
-        newState[axis] = value;
-        this.setState(newState);
+    averageX() {
+        let data = this.activeDataX();
+
+        return data.reduce((acc, val) => Number(acc) + Number(val)) / data.length;
+    }
+
+    averageY() {
+        let data = this.activeDataY();
+
+        return data.reduce((acc, val) => Number(acc) + Number(val)) / data.length;
+    }
+
+    minX() {
+        return Math.min(...this.activeDataX()) - 1;
+    }
+
+    minY() {
+        return Math.min(...this.activeDataY()) - 1;
+    }
+
+    maxX() {
+        return Math.max(...this.activeDataX()) + 1;
+    }
+
+    maxY() {
+        return Math.max(...this.activeDataY()) + 1;
     }
 
     createDropdown(axis) {
@@ -287,7 +299,6 @@ class Circles extends React.Component {
                     e.target.addEventListener('mouseleave', handleMouseLeave);
                 };
 
-
                 return (
                     <polygon
                         points={hexagonCoords(x, y, 1)}
@@ -340,10 +351,7 @@ class Circles extends React.Component {
                 <Select placeholder="Filter Teams..." isMulti options={options} onChange={(values, labels) => {
                     let activeTeams = new Set(values.map(a => a.value));
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
-                    this.setState({ ...this.state, activeData: activeData }, () => {
-                        this.updateAxis('xAxis', this.state.xAxis);
-                        this.updateAxis('yAxis', this.state.yAxis);
-                    });
+                    this.setState({ ...this.state, activeData: activeData });
                 }} />
             </div>
 
@@ -353,10 +361,10 @@ class Circles extends React.Component {
 
     renderXAxis() {
         if (this.state.activeData === null) return;
-        const xMax = this.state.xMax;
-        const xMin = this.state.xMin;
+        const xMax = this.maxX();
+        const xMin = this.minX();
         const tickCount = xMax - xMin + 1; // You can adjust this based on your requirements
-        const yAverage = this.state.yAverage;
+        const yAverage = this.averageY();
         const axisCoordinate = this.toPlotCoords(0, yAverage).y;
 
         return (
@@ -388,10 +396,10 @@ class Circles extends React.Component {
 
     renderYAxis() {
         if (this.state.activeData === null) return;
-        const yMax = this.state.yMax;
-        const yMin = this.state.yMin;
+        const yMax = this.maxY();
+        const yMin = this.minY();
         const tickCount = yMax - yMin + 1; // You can adjust this based on your requirements
-        const xAverage = this.state.xAverage;
+        const xAverage = this.averageX();
         const axisCoordinate = this.toPlotCoords(xAverage, 0).x;
 
         return (
