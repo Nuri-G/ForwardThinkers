@@ -149,8 +149,8 @@ class Circles extends React.Component {
     updateAxis(axis, value) {
         let newState = this.state;
         let data = this.state.activeData.map(a => a['Performance'][value]);
-        let min = Math.min(...data) - 0.5;
-        let max = Math.max(...data) + 0.5;
+        let min = Math.min(...data) - 1;
+        let max = Math.max(...data) + 1;
         let average = data.reduce((acc, val) => Number(acc) + Number(val)) / data.length;
 
         if (axis === 'xAxis') {
