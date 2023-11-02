@@ -37,8 +37,9 @@ class Circles extends React.Component {
         this.width = 100;
         this.height = 50;
         this.loading = false;
-        this.selectedYear= "2022-2023";
-        this.state = { data: null, xAxis: "Gls", yAxis: "Gls", xMin: 0, xMax: 38, yMin: 0, yMax: 15, activeTeams: new Set() } // Updated
+        this.selectedYear = "2022-2023";
+        this.data = null;
+        this.state = { activeData: null, xAxis: "Gls", yAxis: "Ast", xMin: 0, xMax: 38, xAverage: 1, yMin: 0, yMax: 15, yAverage: 1 } // Updated
         this.teamInfo = {
             "Arsenal": {
                 logoUrl: "https://i.etsystatic.com/37424896/r/il/137c95/4157715738/il_fullxfull.4157715738_3xm5.jpg",
@@ -137,25 +138,29 @@ class Circles extends React.Component {
                 processedData.push(processedLine);
             }
 
-            this.setState({ ...this.state, data: processedData }, () => {
-                this.updateAxis('xAxis', 'Gls');
-                this.updateAxis('yAxis', 'Gls');
+            this.data = processedData;
+            this.setState({ ...this.state, activeData: processedData }, () => {
+                this.updateAxis('xAxis', this.state.xAxis);
+                this.updateAxis('yAxis', this.state.yAxis);
             });
         })
     }
 
     updateAxis(axis, value) {
         let newState = this.state;
-        let data = this.state.data.map(a => a['Performance'][value]);
-        let min = Math.min.apply(0, data) - 0.5;
-        let max = Math.max.apply(0, data) + 0.5;
+        let data = this.state.activeData.map(a => a['Performance'][value]);
+        let min = Math.min(...data) - 0.5;
+        let max = Math.max(...data) + 0.5;
+        let average = data.reduce((acc, val) => Number(acc) + Number(val)) / data.length;
 
         if (axis === 'xAxis') {
             newState.xMax = max;
             newState.xMin = min;
+            newState.xAverage = average;
         } else if (axis === 'yAxis') {
             newState.yMax = max;
             newState.yMin = min;
+            newState.yAverage = average;
         }
 
         newState[axis] = value;
@@ -163,8 +168,8 @@ class Circles extends React.Component {
     }
 
     createDropdown(axis) {
-        if (this.state != null && this.state.data != null && this.state.data.length > 0) {
-            let labels = Object.keys(this.state.data[0]['Performance']);
+        if (this.state != null && this.state.activeData != null && this.state.activeData.length > 0) {
+            let labels = Object.keys(this.state.activeData[0]['Performance']);
             let options = [...labels].map(a => {return {'value': a, 'label': a}});
 
             return (<Select className='Axis-Select' placeholder={"Select the " + axis} options={options} onChange={(value, label) => {this.updateAxis(axis, value.value)}} />)
@@ -173,14 +178,11 @@ class Circles extends React.Component {
 
 
     createChart() {
-        if (this.state != null && this.state.data != null) {
-            const dataPoints = this.state.data.map((line, i) => {
+        if (this.state != null && this.state.activeData != null) {
+            const dataPoints = this.state.activeData.map((line, i) => {
                 const performance = line['Performance'];
                 const coords = this.toPlotCoords(performance[this.state.xAxis], performance[this.state.yAxis]);
                 const player = line['Player'];
-                if (!(this.state.activeTeams.size === 0) && !this.state.activeTeams.has(player.Squad)) {
-                    return null;
-                }
                 const x = coords.x;
                 const y = coords.y;
                 const color = this.teamInfo[player.Squad].color;
@@ -332,7 +334,11 @@ class Circles extends React.Component {
                 </svg>
                 <Select placeholder="Filter Teams..." isMulti options={options} onChange={(values, labels) => {
                     let activeTeams = new Set(values.map(a => a.value));
-                    this.setState({ ...this.state, activeTeams: activeTeams });
+                    let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
+                    this.setState({ ...this.state, activeData: activeData }, () => {
+                        this.updateAxis('xAxis', this.state.xAxis);
+                        this.updateAxis('yAxis', this.state.yAxis);
+                    });
                 }} />
             </div>
 
@@ -341,16 +347,11 @@ class Circles extends React.Component {
 
 
     renderXAxis() {
-        if (this.state.data === null) return;
-        const data = this.state.data;
-        const xAxisProperty = this.state.xAxis;
-        const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
-        const yAxisProperty = this.state.yAxis;
-        const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
-        const xMax = Math.max(...xValues);
-        const xMin = Math.min(...xValues);
+        if (this.state.activeData === null) return;
+        const xMax = this.state.xMax;
+        const xMin = this.state.xMin;
         const tickCount = xMax - xMin + 1; // You can adjust this based on your requirements
-        const yAverage = yValues.reduce((acc, val) => acc + val, 0) / yValues.length;
+        const yAverage = this.state.yAverage;
         const axisCoordinate = this.toPlotCoords(0, yAverage).y;
 
         return (
@@ -381,16 +382,11 @@ class Circles extends React.Component {
 
 
     renderYAxis() {
-        if (this.state.data === null) return;
-        const data = this.state.data;
-        const xAxisProperty = this.state.xAxis;
-        const xValues = data ? data.map(line => parseFloat(line['Performance'][xAxisProperty])) : [];
-        const yAxisProperty = this.state.yAxis;
-        const yValues = data ? data.map(line => parseFloat(line['Performance'][yAxisProperty])) : [];
-        const yMax = Math.max(...yValues);
-        const yMin = Math.min(...yValues);
+        if (this.state.activeData === null) return;
+        const yMax = this.state.yMax;
+        const yMin = this.state.yMin;
         const tickCount = yMax - yMin + 1; // You can adjust this based on your requirements
-        const xAverage = xValues.reduce((acc, val) => acc + val, 0) / xValues.length;
+        const xAverage = this.state.xAverage;
         const axisCoordinate = this.toPlotCoords(xAverage, 0).x;
 
         return (
