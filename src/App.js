@@ -186,6 +186,9 @@ class Circles extends React.Component {
                 const x = coords.x;
                 const y = coords.y;
                 const color = this.teamInfo[player.Squad].color;
+                if(color == null) {
+                    color = 'red';
+                }
 
                 return {
                     player: player,
