@@ -3,6 +3,7 @@ import React from 'react';
 import Papa from "papaparse";
 import Select from 'react-select';
 import Graph from './Graph'
+import Leaderboard from './Leaderboard'
 
 const teamInfo = {
     "Arsenal": {
@@ -158,9 +159,14 @@ class App extends React.Component {
                         () => this.loadDatasetForSelectedYear(selectedOption.value)
                     );
                 }}/>
-                {this.createDropdown("xAxis")}
-                {this.createDropdown("yAxis")}
-                <Graph activeData={this.state.activeData} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo} width={110} height={50}></Graph>
+                <div className='LeaderboardContainer'>
+                    <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
+                </div>
+                <div className='GraphContainer' onClick={this.props.onCLick}>
+                    {this.createDropdown("xAxis")}
+                    {this.createDropdown("yAxis")}
+                    <Graph activeData={this.state.activeData} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo} width={100} height={79}></Graph>
+                </div>
                 <Select placeholder="Filter Teams..." isMulti options={dropdownTeamOptions} onChange={(values, labels) => {
                     let activeTeams = new Set(values.map(a => a.value));
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));

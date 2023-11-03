@@ -1,7 +1,6 @@
 .App {
   text-align: center;
   padding: 6px;
-  width: 90%;
   margin: auto;
 }
 
@@ -58,4 +57,15 @@
   font-size: 2em;
   text-align: center;
   margin: 0;
+}
+
+.LeaderboardContainer {
+  width: 50%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.GraphContainer {
+  width: 50%;
+  display: inline-block;
 }

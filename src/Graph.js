@@ -82,8 +82,6 @@ class Graph extends React.Component {
                 x: x,
                 y: y,
                 color: color,
-                // xAxisName: this.props.xAxis,
-                // yAxisName: this.props.yAxis,
                 xAxisValue: performance[this.props.xAxis],
                 yAxisValue: performance[this.props.yAxis]
             };
@@ -250,14 +248,11 @@ class Graph extends React.Component {
 
     render() {
         return ( //This box might need to be bigger as well, or we just make circles smaller
-            <div>
-                <svg viewBox={'0 0 ' + this.props.width + ' ' + this.props.height} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px'}}>
-                    {this.createChart()}
-                    {this.renderXAxis()}
-                    {this.renderYAxis()}
-                </svg>
-            </div>
-
+            <svg viewBox={'0 0 ' + this.props.width + ' ' + this.props.height} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px', zIndex: '2'}}>
+                {this.createChart()}
+                {this.renderXAxis()}
+                {this.renderYAxis()}
+            </svg>
         );
     }
 } export default Graph;
