@@ -20,10 +20,6 @@ function hexagonCoords(x, y, radius) {
 }
 
 class Graph extends React.Component {
-    constructor() {
-        super();   
-    }
-
     toPlotCoords(x, y) {
         let newX = ((x - this.minX()) / (this.maxX() - this.minX())) * this.props.width;
         let newY = this.props.height - ((y - this.minY()) / (this.maxY() - this.minY())) * this.props.height;
@@ -119,7 +115,7 @@ class Graph extends React.Component {
                     const currentPlayer = group[index];
 
                     if (currentPlayer) {
-                        const { player, xAxisName, yAxisName, xAxisValue, yAxisValue } = currentPlayer;
+                        const { player, xAxisValue, yAxisValue } = currentPlayer;
                         const modalContent = `Team: ${player.Squad} ${this.props.xAxis}: ${xAxisValue} ${this.props.yAxis}: ${yAxisValue}`;
                         const isPreviousDisabled = index === 0;  // Disable "Previous" when at the first data point
                         const isNextDisabled = index === group.length - 1;
