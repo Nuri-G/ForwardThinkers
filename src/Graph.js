@@ -21,16 +21,12 @@ function hexagonCoords(x, y, radius) {
 
 class Graph extends React.Component {
     constructor() {
-        super();
-        this.width = 100;
-        this.height = 50;
-        
-        this.state = { xAxis: "Gls", yAxis: "Ast"} // Updated
+        super();   
     }
 
     toPlotCoords(x, y) {
-        let newX = ((x - this.minX()) / (this.maxX() - this.minX())) * this.width;
-        let newY = 50 - ((y - this.minY()) / (this.maxY() - this.minY())) * this.height;
+        let newX = ((x - this.minX()) / (this.maxX() - this.minX())) * this.props.width;
+        let newY = this.props.height - ((y - this.minY()) / (this.maxY() - this.minY())) * this.props.height;
         return {
             'x': newX,
             'y': newY,
@@ -124,7 +120,7 @@ class Graph extends React.Component {
 
                     if (currentPlayer) {
                         const { player, xAxisName, yAxisName, xAxisValue, yAxisValue } = currentPlayer;
-                        const modalContent = `Team: ${player.Squad} ${xAxisName}: ${xAxisValue} ${yAxisName}: ${yAxisValue}`;
+                        const modalContent = `Team: ${player.Squad} ${this.props.xAxis}: ${xAxisValue} ${this.props.yAxis}: ${yAxisValue}`;
                         const isPreviousDisabled = index === 0;  // Disable "Previous" when at the first data point
                         const isNextDisabled = index === group.length - 1;
 
@@ -201,7 +197,7 @@ class Graph extends React.Component {
 
         return (
             <g>
-                <line x1={0} y1={axisCoordinate} x2={this.width} y2={axisCoordinate} stroke="black" strokeWidth="0.1" />
+                <line x1={0} y1={axisCoordinate} x2={this.props.width} y2={axisCoordinate} stroke="black" strokeWidth="0.1" />
                 {Array.from({ length: tickCount }).map((_, i) => {
                     const value = xMin + i; // Calculate the tick value as a whole number
                     const { x } = this.toPlotCoords(value, 0); // Convert value to screen coordinates
@@ -234,7 +230,7 @@ class Graph extends React.Component {
 
         return (
             <g>
-                <line x1={axisCoordinate} y1={0} x2={axisCoordinate} y2={this.height} stroke="black" strokeWidth="0.1" />
+                <line x1={axisCoordinate} y1={0} x2={axisCoordinate} y2={this.props.height} stroke="black" strokeWidth="0.1" />
                 {Array.from({ length: tickCount }).map((_, i) => {
                     const value = yMin + i; // Calculate the tick value as a whole number
                     const { y } = this.toPlotCoords(0, value); // Convert value to screen coordinates
@@ -259,7 +255,7 @@ class Graph extends React.Component {
     render() {
         return ( //This box might need to be bigger as well, or we just make circles smaller
             <div>
-                <svg viewBox="0 0 100 50" style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px'}}>
+                <svg viewBox={'0 0 ' + this.props.width + ' ' + this.props.height} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px'}}>
                     {this.createChart()}
                     {this.renderXAxis()}
                     {this.renderYAxis()}

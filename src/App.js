@@ -160,7 +160,7 @@ class App extends React.Component {
                 }}/>
                 {this.createDropdown("xAxis")}
                 {this.createDropdown("yAxis")}
-                <Graph activeData={this.state.activeData} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo}></Graph>
+                <Graph activeData={this.state.activeData} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo} width={110} height={50}></Graph>
                 <Select placeholder="Filter Teams..." isMulti options={dropdownTeamOptions} onChange={(values, labels) => {
                     let activeTeams = new Set(values.map(a => a.value));
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
