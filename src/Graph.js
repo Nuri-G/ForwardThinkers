@@ -1,5 +1,7 @@
 import React from 'react';
 import swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import StatChart from './StatChart';
 
 function hexagonCoords(x, y, radius) {
     let angle = 0;
@@ -50,20 +52,46 @@ class Graph extends React.Component {
     }
 
     minX() {
-        return Math.min(...this.activeDataX()) - 1;
+        return Math.min(...this.activeDataX());
     }
 
     minY() {
-        return Math.min(...this.activeDataY()) - 1;
+        return Math.min(...this.activeDataY());
     }
 
     maxX() {
-        return Math.max(...this.activeDataX()) + 1;
+        return Math.max(...this.activeDataX());
     }
 
     maxY() {
-        return Math.max(...this.activeDataY()) + 1;
+        return Math.max(...this.activeDataY());
     }
+
+    renderXAxisLabel() {
+        const xLabel = this.props.xAxis; // Assuming this is the selected label for X axis
+        const margin = 5;
+        const xLabelX = (this.props.width + margin)/ 2;
+        const xLabelY = this.props.height + margin-2;
+
+        return (
+            <text x={xLabelX} y={xLabelY} textAnchor="middle" fontSize="2">
+                {xLabel}
+            </text>
+        );
+    }
+    renderYAxisLabel() {
+        const yLabel = this.props.yAxis; // Assuming this is the selected label for Y axis
+        const margin = 5;
+        const yLabelX = -2;
+        const yLabelY = (this.props.height + margin) / 2;
+
+        return (
+            <text x={yLabelX} y={yLabelY} textAnchor="end" fontSize="2" transform={`rotate(-90, ${yLabelX}, ${yLabelY})`}>
+                {yLabel}
+            </text>
+        );
+    }
+
 
     createChart() {
         const dataPoints = this.props.activeData.map((line, i) => {
@@ -80,7 +108,7 @@ class Graph extends React.Component {
            // console.log(this.props.teamInfo[player.Squad].color)
 
             return {
-                player: player,
+                stats: line,
                 x: x,
                 y: y,
                 color: color,
@@ -106,7 +134,8 @@ class Graph extends React.Component {
         });
 
         return Object.values(overlappingDataPoints).map((group, i) => {
-            const { player, x, y, color, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
+            const { stats, x, y, color, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
+            let player = stats.Player
 
             const handleClick = (e) => {
                 let currentIndex = 0;
@@ -115,14 +144,49 @@ class Graph extends React.Component {
                     const currentPlayer = group[index];
 
                     if (currentPlayer) {
-                        const { player, xAxisValue, yAxisValue } = currentPlayer;
-                        const modalContent = `Team: ${player.Squad} ${this.props.xAxis}: ${xAxisValue} ${this.props.yAxis}: ${yAxisValue}`;
+                        player = currentPlayer.stats.Player;
                         const isPreviousDisabled = index === 0;  // Disable "Previous" when at the first data point
                         const isNextDisabled = index === group.length - 1;
+                        let chartStats = [{
+                            name: 'Goals',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a.Performance.Gls)),
+                            value: currentPlayer.stats.Performance.Gls
+                        },
+                        {
+                            name: 'Assists',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a.Performance.Ast)),
+                            value: currentPlayer.stats.Performance.Ast
+                        },
+                        {
+                            name: 'Minutes Played',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => Number(a['Playing Time'].Min.replace(',', '')))),
+                            value: Number(currentPlayer.stats['Playing Time'].Min.replace(',', ''))
+                        },
+                        {
+                            name: 'Expected Goals',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a['Expected'].xG)),
+                            value: currentPlayer.stats['Expected'].xG
+                        },
+                        {
+                            name: 'Progressive Carries',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a['Progression'].PrgC)),
+                            value: currentPlayer.stats['Progression'].PrgC
+                        },
+                        {
+                            name: 'Progressive Passes',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a['Progression'].PrgP)),
+                            value: currentPlayer.stats['Progression'].PrgP
+                        }];
 
-                        swal.fire({
+                        withReactContent(swal).fire({
                             title: player.Player,
-                            text: modalContent,
+                            html: (<StatChart stats={chartStats}></StatChart>),
                             imageUrl: this.props.teamInfo[player.Squad].logoUrl,
                             imageHeight: 100,
                             showCloseButton: true,
@@ -160,7 +224,10 @@ class Graph extends React.Component {
                 tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
                 tooltip.style.position = 'absolute';
                 tooltip.style.userSelect = 'none';
-                
+                tooltip.style.backgroundColor = 'rgb(255, 255, 255)';
+                tooltip.style.border = '1.5px solid rgb(0, 0, 0)'; // Set a 1px solid black border
+                tooltip.style.padding = '5px'
+
                 const offsetX = 10; // Adjust this value as needed for spacing
                 
                 // Since you need the height, you have to set the tooltip into the document
@@ -275,11 +342,17 @@ class Graph extends React.Component {
     }
 
     render() {
+        const margin = 5;
+        const viewBoxWidth = this.props.width + margin * 2;
+        const viewBoxHeight = this.props.height + margin * 2;
+
         return ( //This box might need to be bigger as well, or we just make circles smaller
-            <svg viewBox={'0 0 ' + this.props.width + ' ' + this.props.height} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px', zIndex: '2'}}>
+        <svg viewBox={`-${margin} -${margin} ${viewBoxWidth} ${viewBoxHeight}`} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px', zIndex: '2' }}>
                 {this.createChart()}
                 {this.renderXAxis()}
                 {this.renderYAxis()}
+                {this.renderXAxisLabel()}
+                {this.renderYAxisLabel()}
             </svg>
         );
     }

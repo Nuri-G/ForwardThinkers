@@ -242,7 +242,7 @@ class App extends React.Component {
     }
 
     loadDatasetForSelectedYear() {
-        const filename = `./data/${this.state.selectedYear}.csv`;
+        const filename = `./data/${this.selectedYear}.csv`;
         this.loadDataset(filename);
     }
 
@@ -264,7 +264,8 @@ class App extends React.Component {
 
         this.data = null;
         this.loading = false;
-        this.state = { activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: [], selectedYear: "2022-2023" };
+        this.selectedYear = "2022-2023";
+        this.state = {activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: []};
     }
 
     render() {
@@ -285,15 +286,13 @@ class App extends React.Component {
 
         return (
             <div className="App">
-                <Select placeholder="Select Year..."
-                    value={{ value: this.state.selectedYear, label: 'Selected Year: ' + this.state.selectedYear }}
-                    options={yearOptions}
-                    onChange={(selectedOption) => {
-                        this.setState(
-                            { ...this.state, selectedYear: selectedOption.value },
-                            () => this.loadDatasetForSelectedYear(selectedOption.value)
-                        );
-                    }} />
+                <Select placeholder = "Select Year..."
+                value={{value: this.selectedYear, label: 'Selected Year: ' + this.selectedYear}}
+                options={yearOptions}
+                onChange={(selectedOption) => {
+                    this.selectedYear = selectedOption.value;
+                    this.loadDatasetForSelectedYear(selectedOption.value);
+                }}/>
                 <div className='LeaderboardContainer'>
                     <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
                 </div>
