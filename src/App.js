@@ -4,6 +4,7 @@ import Papa from "papaparse";
 import Select from 'react-select';
 import Graph from './Graph'
 import Leaderboard from './Leaderboard'
+import StatChart from './StatChart'
 
 const teamInfo = {
     "Arsenal": {
@@ -153,6 +154,43 @@ class App extends React.Component {
         }
         dropdownTeamOptions = [...dropdownTeamOptions].map(a => {return {'value': a, 'label': a}});
 
+        let chartStats = [{
+            name: 'Goals',
+            minValue: 0,
+            maxValue: 3,
+            value: 3
+        },
+        {
+            name: 'Assists',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.5
+        },
+        {
+            name: 'stat name here',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.1
+        },
+        {
+            name: 'stat name here',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.1
+        },
+        {
+            name: 'stat name here',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.1
+        },
+        {
+            name: 'stat name here',
+            minValue: 0,
+            maxValue: 2,
+            value: 0.8
+        }];
+
         return (
             <div className="App">
                 <Select placeholder = "Select Year..."
@@ -177,6 +215,7 @@ class App extends React.Component {
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
                     this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => {return {'value': a, 'label': a}}) });
                 }} />
+                <StatChart stats={chartStats}></StatChart>
             </div>
         );
     }
