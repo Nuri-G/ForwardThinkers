@@ -168,25 +168,25 @@ class App extends React.Component {
             value: 1.5
         },
         {
-            name: 'stat name here',
+            name: 'Minutes Played',
             minValue: 0,
             maxValue: 2,
             value: 1.1
         },
         {
-            name: 'stat name here',
+            name: 'Expected Goals',
             minValue: 0,
             maxValue: 2,
             value: 1.1
         },
         {
-            name: 'stat name here',
+            name: 'Progressive Carries',
             minValue: 0,
             maxValue: 2,
             value: 1.1
         },
         {
-            name: 'stat name here',
+            name: 'Progressive Passes',
             minValue: 0,
             maxValue: 2,
             value: 0.8
