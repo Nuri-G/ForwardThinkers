@@ -142,8 +142,7 @@ class Graph extends React.Component {
                     const currentPlayer = group[index];
 
                     if (currentPlayer) {
-                        const { xAxisValue, yAxisValue } = currentPlayer;
-                        const modalContent = `Team: ${player.Squad} ${this.props.xAxis}: ${xAxisValue} ${this.props.yAxis}: ${yAxisValue}`;
+                        player = currentPlayer.stats.Player;
                         const isPreviousDisabled = index === 0;  // Disable "Previous" when at the first data point
                         const isNextDisabled = index === group.length - 1;
                         let chartStats = [{

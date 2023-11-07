@@ -4,7 +4,6 @@ import Papa from "papaparse";
 import Select from 'react-select';
 import Graph from './Graph'
 import Leaderboard from './Leaderboard'
-import StatChart from './StatChart'
 
 const teamInfo = {
     "Arsenal": {
