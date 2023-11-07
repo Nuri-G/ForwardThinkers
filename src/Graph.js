@@ -1,5 +1,7 @@
 import React from 'react';
 import swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import StatChart from './StatChart';
 
 function hexagonCoords(x, y, radius) {
     let angle = 0;
@@ -104,7 +106,7 @@ class Graph extends React.Component {
             }
 
             return {
-                player: player,
+                stats: line,
                 x: x,
                 y: y,
                 color: color,
@@ -130,7 +132,8 @@ class Graph extends React.Component {
         });
 
         return Object.values(overlappingDataPoints).map((group, i) => {
-            const { player, x, y, color, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
+            const { stats, x, y, color, xAxisValue, yAxisValue } = group[0]; // Use the first data point in the group
+            let player = stats.Player
 
             const handleClick = (e) => {
                 let currentIndex = 0;
@@ -139,14 +142,50 @@ class Graph extends React.Component {
                     const currentPlayer = group[index];
 
                     if (currentPlayer) {
-                        const { player, xAxisValue, yAxisValue } = currentPlayer;
+                        const { xAxisValue, yAxisValue } = currentPlayer;
                         const modalContent = `Team: ${player.Squad} ${this.props.xAxis}: ${xAxisValue} ${this.props.yAxis}: ${yAxisValue}`;
                         const isPreviousDisabled = index === 0;  // Disable "Previous" when at the first data point
                         const isNextDisabled = index === group.length - 1;
+                        let chartStats = [{
+                            name: 'Goals',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a.Performance.Gls)),
+                            value: currentPlayer.stats.Performance.Gls
+                        },
+                        {
+                            name: 'Assists',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a.Performance.Ast)),
+                            value: currentPlayer.stats.Performance.Ast
+                        },
+                        {
+                            name: 'Minutes Played',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => Number(a['Playing Time'].Min.replace(',', '')))),
+                            value: Number(currentPlayer.stats['Playing Time'].Min.replace(',', ''))
+                        },
+                        {
+                            name: 'Expected Goals',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a['Expected'].xG)),
+                            value: currentPlayer.stats['Expected'].xG
+                        },
+                        {
+                            name: 'Progressive Carries',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a['Progression'].PrgC)),
+                            value: currentPlayer.stats['Progression'].PrgC
+                        },
+                        {
+                            name: 'Progressive Passes',
+                            minValue: 0,
+                            maxValue: Math.max(...this.props.activeData.map(a => a['Progression'].PrgP)),
+                            value: currentPlayer.stats['Progression'].PrgP
+                        }];
 
-                        swal.fire({
+                        withReactContent(swal).fire({
                             title: player.Player,
-                            text: modalContent,
+                            html: (<StatChart stats={chartStats}></StatChart>),
                             imageUrl: this.props.teamInfo[player.Squad].logoUrl,
                             imageHeight: 100,
                             showCloseButton: true,
@@ -162,7 +201,6 @@ class Graph extends React.Component {
                                 confirmButton: 'order-2'
                             }
                         }).then((result) => {
-                            console.log(result);
                             if (result.isConfirmed) {
                                 swal.close();
                                 showModal(index + 1);

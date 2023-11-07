@@ -155,43 +155,6 @@ class App extends React.Component {
         }
         dropdownTeamOptions = [...dropdownTeamOptions].map(a => {return {'value': a, 'label': a}});
 
-        let chartStats = [{
-            name: 'Goals',
-            minValue: 0,
-            maxValue: Math.max(...this.data.map(a => a.Performance.Gls)),
-            value: 36
-        },
-        {
-            name: 'Assists',
-            minValue: 0,
-            maxValue: Math.max(...this.data.map(a => a.Performance.Ast)),
-            value: 1.5
-        },
-        {
-            name: 'Minutes Played',
-            minValue: 0,
-            maxValue: Math.max(...this.data.map(a => a['Playing Time'].Min.replace(',', ''))),
-            value: 2000
-        },
-        {
-            name: 'Expected Goals',
-            minValue: 0,
-            maxValue: Math.max(...this.data.map(a => a['Expected'].xG)),
-            value: 3
-        },
-        {
-            name: 'Progressive Carries',
-            minValue: 0,
-            maxValue: Math.max(...this.data.map(a => a['Progression'].PrgC)),
-            value: 15
-        },
-        {
-            name: 'Progressive Passes',
-            minValue: 0,
-            maxValue: Math.max(...this.data.map(a => a['Progression'].PrgP)),
-            value: 15
-        }];
-
         return (
             <div className="App">
                 <Select placeholder = "Select Year..."
@@ -214,7 +177,6 @@ class App extends React.Component {
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
                     this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => {return {'value': a, 'label': a}}) });
                 }} />
-                <StatChart stats={chartStats}></StatChart>
             </div>
         );
     }
