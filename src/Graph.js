@@ -158,16 +158,40 @@ class Graph extends React.Component {
                 tooltip.className = 'tooltip';
                 tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
                 tooltip.style.position = 'absolute';
-                tooltip.style.left = e.pageX + 10 + 'px';
-                tooltip.style.top = e.pageY + 10 + 'px';
                 tooltip.style.userSelect = 'none';
+                
+                const offsetX = 10; // Adjust this value as needed for spacing
+                
+                // Since you need the height, you have to set the tooltip into the document
+                // temporarily to measure the height
                 document.body.appendChild(tooltip);
-
+                const tooltipWidth = tooltip.offsetWidth;
+                const tooltipHeight = tooltip.offsetHeight;
+                document.body.removeChild(tooltip); // Remove it after measurement
+                
+                // Calculate the positions
+                let leftPosition = e.pageX + offsetX;
+                let topPosition = e.pageY + offsetX;
+                
+                // Adjust positions if tooltip goes beyond window boundaries
+                if (leftPosition + tooltipWidth > window.innerWidth) {
+                    leftPosition = window.innerWidth - tooltipWidth - offsetX;
+                }
+                
+                if (topPosition + tooltipHeight > window.innerHeight) {
+                    topPosition = window.innerHeight - tooltipHeight - offsetX;
+                }
+                
+                tooltip.style.left = leftPosition + 'px';
+                tooltip.style.top = topPosition + 'px'; // Correct 'py' typo
+                
+                document.body.appendChild(tooltip);
+                
                 const handleMouseLeave = () => {
                     document.body.removeChild(tooltip);
                     e.target.removeEventListener('mouseleave', handleMouseLeave);
                 };
-
+                
                 e.target.addEventListener('mouseleave', handleMouseLeave);
             };
 
