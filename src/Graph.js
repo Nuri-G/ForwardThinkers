@@ -77,6 +77,8 @@ class Graph extends React.Component {
                 color = 'red';
             }
 
+           // console.log(this.props.teamInfo[player.Squad].color)
+
             return {
                 player: player,
                 x: x,
@@ -136,7 +138,6 @@ class Graph extends React.Component {
                                 confirmButton: 'order-2'
                             }
                         }).then((result) => {
-                            console.log(result);
                             if (result.isConfirmed) {
                                 swal.close();
                                 showModal(index + 1);
