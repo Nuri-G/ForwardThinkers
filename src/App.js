@@ -147,7 +147,11 @@ class App extends React.Component {
             return <p>Loading...</p>
         }
 
-        const dropdownTeamOptions = [...Object.keys(teamInfo)].map(a => {return {'value': a, 'label': a}});
+        let dropdownTeamOptions = new Set();
+        for(let player of this.state.activeData) {
+            dropdownTeamOptions.add(player.Player.Squad);
+        }
+        dropdownTeamOptions = [...dropdownTeamOptions].map(a => {return {'value': a, 'label': a}});
 
         return (
             <div className="App">
@@ -155,7 +159,7 @@ class App extends React.Component {
                 options={yearOptions}
                 onChange={(selectedOption) => {
                     this.setState(
-                        { ...this.state, selectedYear: selectedOption.value, data: null },
+                        { ...this.state, selectedYear: selectedOption.value },
                         () => this.loadDatasetForSelectedYear(selectedOption.value)
                     );
                 }}/>
