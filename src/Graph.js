@@ -124,24 +124,27 @@ class Graph extends React.Component {
                             imageUrl: this.props.teamInfo[player.Squad].logoUrl,
                             imageHeight: 100,
                             showCloseButton: true,
-                            showCancelButton: !isPreviousDisabled,
+                            showDenyButton: !isPreviousDisabled,
                             showConfirmButton: !isNextDisabled,
                             confirmButtonText: 'Next',
-                            cancelButtonText: 'Previous',
-                            cancelButtonColor: '#7066e0',
+                            denyButtonText: 'Previous',
+                            denyButtonColor: '#7066e0',
                             footer: `Showing: ${index + 1} of ${group.length}`,
                             customClass: {
                                 actions: 'my-actions',
-                                cancelButton: 'order-1',
+                                denyButton: 'order-1',
                                 confirmButton: 'order-2'
                             }
                         }).then((result) => {
+                            console.log(result);
                             if (result.isConfirmed) {
-                                swal.close(); // Close the current modal
+                                swal.close();
                                 showModal(index + 1);
-                            } else {
-                                swal.close(); // Close the current modal
+                            } else if (result.isDenied) {
+                                swal.close();
                                 showModal(index - 1);
+                            } else {
+                                swal.close();
                             }
                         });
                     }
@@ -155,16 +158,43 @@ class Graph extends React.Component {
                 tooltip.className = 'tooltip';
                 tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
                 tooltip.style.position = 'absolute';
-                tooltip.style.left = e.pageX + 10 + 'px';
-                tooltip.style.top = e.pageY + 10 + 'px';
                 tooltip.style.userSelect = 'none';
-                document.body.appendChild(tooltip);
+                tooltip.style.backgroundColor = 'rgb(255, 255, 255)';
+                tooltip.style.border = '1.5px solid rgb(0, 0, 0)'; // Set a 1px solid black border
+                tooltip.style.padding = '5px'
 
+                const offsetX = 10; // Adjust this value as needed for spacing
+                
+                // Since you need the height, you have to set the tooltip into the document
+                // temporarily to measure the height
+                document.body.appendChild(tooltip);
+                const tooltipWidth = tooltip.offsetWidth;
+                const tooltipHeight = tooltip.offsetHeight;
+                document.body.removeChild(tooltip); // Remove it after measurement
+                
+                // Calculate the positions
+                let leftPosition = e.pageX + offsetX;
+                let topPosition = e.pageY + offsetX;
+                
+                // Adjust positions if tooltip goes beyond window boundaries
+                if (leftPosition + tooltipWidth > window.innerWidth) {
+                    leftPosition = window.innerWidth - tooltipWidth - offsetX;
+                }
+                
+                if (topPosition + tooltipHeight > window.innerHeight) {
+                    topPosition = window.innerHeight - tooltipHeight - offsetX;
+                }
+                
+                tooltip.style.left = leftPosition + 'px';
+                tooltip.style.top = topPosition + 'px'; // Correct 'py' typo
+                
+                document.body.appendChild(tooltip);
+                
                 const handleMouseLeave = () => {
                     document.body.removeChild(tooltip);
                     e.target.removeEventListener('mouseleave', handleMouseLeave);
                 };
-
+                
                 e.target.addEventListener('mouseleave', handleMouseLeave);
             };
 
