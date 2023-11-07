@@ -158,38 +158,38 @@ class App extends React.Component {
         let chartStats = [{
             name: 'Goals',
             minValue: 0,
-            maxValue: 3,
-            value: 3
+            maxValue: Math.max(...this.data.map(a => a.Performance.Gls)),
+            value: 36
         },
         {
             name: 'Assists',
             minValue: 0,
-            maxValue: 2,
+            maxValue: Math.max(...this.data.map(a => a.Performance.Ast)),
             value: 1.5
         },
         {
             name: 'Minutes Played',
             minValue: 0,
-            maxValue: 2,
-            value: 1.1
+            maxValue: Math.max(...this.data.map(a => a['Playing Time'].Min.replace(',', ''))),
+            value: 2000
         },
         {
             name: 'Expected Goals',
             minValue: 0,
-            maxValue: 2,
-            value: 1.1
+            maxValue: Math.max(...this.data.map(a => a['Expected'].xG)),
+            value: 3
         },
         {
             name: 'Progressive Carries',
             minValue: 0,
-            maxValue: 2,
-            value: 1.1
+            maxValue: Math.max(...this.data.map(a => a['Progression'].PrgC)),
+            value: 15
         },
         {
             name: 'Progressive Passes',
             minValue: 0,
-            maxValue: 2,
-            value: 0.8
+            maxValue: Math.max(...this.data.map(a => a['Progression'].PrgP)),
+            value: 15
         }];
 
         return (
