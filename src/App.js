@@ -107,7 +107,7 @@ class App extends React.Component {
                 processedData.push(processedLine);
             }
             this.data = processedData;
-            this.setState({ ...this.state, activeData: processedData });
+            this.setState({ ...this.state, activeData: processedData, activeTeams: [] });
         })
     }
 
@@ -120,8 +120,8 @@ class App extends React.Component {
         if (this.state != null && this.state.activeData != null && this.state.activeData.length > 0) {
             let labels = Object.keys(this.state.activeData[0]['Performance']);
             let options = [...labels].map(a => {return {'value': a, 'label': a}});
-    
-            return (<Select className='Axis-Select' placeholder={"Select the " + axis} options={options} onChange={(value, label) => {
+            
+            return (<Select className='Axis-Select' value={{value: this.state[axis], label: axis + ": " + this.state[axis]}} placeholder={"Select the " + axis} options={options} onChange={(value, label) => {
                 let state = this.state;
                 state[axis] = value.value;
                 this.setState(state);
@@ -134,7 +134,7 @@ class App extends React.Component {
 
         this.data = null;
         this.loading = false;
-        this.state = {activeData: null, xAxis: 'Gls', yAxis: 'Ast', selectedYear: "2022-2023"};
+        this.state = {activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: [], selectedYear: "2022-2023"};
     }
 
     render() {
@@ -148,7 +148,7 @@ class App extends React.Component {
         }
 
         let dropdownTeamOptions = new Set();
-        for(let player of this.state.activeData) {
+        for(let player of this.data) {
             dropdownTeamOptions.add(player.Player.Squad);
         }
         dropdownTeamOptions = [...dropdownTeamOptions].map(a => {return {'value': a, 'label': a}});
@@ -156,6 +156,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <Select placeholder = "Select Year..."
+                value={{value: this.state.selectedYear, label: 'Selected Year: ' + this.state.selectedYear}}
                 options={yearOptions}
                 onChange={(selectedOption) => {
                     this.setState(
@@ -171,10 +172,10 @@ class App extends React.Component {
                     {this.createDropdown("yAxis")}
                     <Graph activeData={this.state.activeData} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo} width={100} height={79}></Graph>
                 </div>
-                <Select placeholder="Filter Teams..." isMulti options={dropdownTeamOptions} onChange={(values, labels) => {
+                <Select placeholder="Filter Teams..." isMulti value={this.state.activeTeams} options={dropdownTeamOptions} onChange={(values, labels) => {
                     let activeTeams = new Set(values.map(a => a.value));
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
-                    this.setState({ ...this.state, activeData: activeData });
+                    this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => {return {'value': a, 'label': a}}) });
                 }} />
             </div>
         );
