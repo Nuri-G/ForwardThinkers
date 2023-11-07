@@ -153,51 +153,21 @@ class Graph extends React.Component {
                 showModal(currentIndex);
             };
 
-            // const handleHover = (e) => {
-            //     const tooltip = document.createElement('div');
-            //     tooltip.className = 'tooltip';
-            //     tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
-            //     tooltip.style.position = 'absolute';
-            //     tooltip.style.left = e.pageX + 10 + 'px';
-            //     tooltip.style.top = e.pageY + 10 + 'px';
-            //     tooltip.style.userSelect = 'none';
-            //     document.body.appendChild(tooltip);
-
-            //     const handleMouseLeave = () => {
-            //         document.body.removeChild(tooltip);
-            //         e.target.removeEventListener('mouseleave', handleMouseLeave);
-            //     };
-
-            //     e.target.addEventListener('mouseleave', handleMouseLeave);
-            // };
-
             const handleHover = (e) => {
                 const tooltip = document.createElement('div');
                 tooltip.className = 'tooltip';
-            
-                const centerX = window.innerWidth / 2;
-            
-                // Calculate the position relative to the center of the screen
-                const positionRelativeToCenter = e.pageX - centerX;
-            
-                if (positionRelativeToCenter >= 0) {
-                    // Cursor is on the right side of the screen, position the tooltip on the left
-                    tooltip.style.left = e.pageX - tooltip.offsetWidth - 10 + 'px'; // 10 is a small offset
-                } else {
-                    // Cursor is on the left side of the screen, position the tooltip on the right
-                    tooltip.style.left = e.pageX + 10 + 'px'; // 10 is a small offset
-                }
-            
-                tooltip.style.top = e.pageY + 10 + 'px'; // Offset it slightly below the cursor
-                tooltip.style.userSelect = 'none';
                 tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
+                tooltip.style.position = 'absolute';
+                tooltip.style.left = e.pageX + 10 + 'px';
+                tooltip.style.top = e.pageY + 10 + 'px';
+                tooltip.style.userSelect = 'none';
                 document.body.appendChild(tooltip);
-            
+
                 const handleMouseLeave = () => {
                     document.body.removeChild(tooltip);
                     e.target.removeEventListener('mouseleave', handleMouseLeave);
                 };
-            
+
                 e.target.addEventListener('mouseleave', handleMouseLeave);
             };
 
