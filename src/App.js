@@ -4,6 +4,7 @@ import Papa from "papaparse";
 import Select from 'react-select';
 import Graph from './Graph'
 import Leaderboard from './Leaderboard'
+import StatChart from './StatChart'
 
 const teamInfo = {
     "Arsenal": {
@@ -112,7 +113,7 @@ class App extends React.Component {
     }
 
     loadDatasetForSelectedYear() {
-        const filename = `./data/${this.state.selectedYear}.csv`;
+        const filename = `./data/${this.selectedYear}.csv`;
         this.loadDataset(filename);
     }
 
@@ -134,7 +135,8 @@ class App extends React.Component {
 
         this.data = null;
         this.loading = false;
-        this.state = {activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: [], selectedYear: "2022-2023"};
+        this.selectedYear = "2022-2023";
+        this.state = {activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: []};
     }
 
     render() {
@@ -153,16 +155,51 @@ class App extends React.Component {
         }
         dropdownTeamOptions = [...dropdownTeamOptions].map(a => {return {'value': a, 'label': a}});
 
+        let chartStats = [{
+            name: 'Goals',
+            minValue: 0,
+            maxValue: 3,
+            value: 3
+        },
+        {
+            name: 'Assists',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.5
+        },
+        {
+            name: 'Minutes Played',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.1
+        },
+        {
+            name: 'Expected Goals',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.1
+        },
+        {
+            name: 'Progressive Carries',
+            minValue: 0,
+            maxValue: 2,
+            value: 1.1
+        },
+        {
+            name: 'Progressive Passes',
+            minValue: 0,
+            maxValue: 2,
+            value: 0.8
+        }];
+
         return (
             <div className="App">
                 <Select placeholder = "Select Year..."
-                value={{value: this.state.selectedYear, label: 'Selected Year: ' + this.state.selectedYear}}
+                value={{value: this.selectedYear, label: 'Selected Year: ' + this.selectedYear}}
                 options={yearOptions}
                 onChange={(selectedOption) => {
-                    this.setState(
-                        { ...this.state, selectedYear: selectedOption.value },
-                        () => this.loadDatasetForSelectedYear(selectedOption.value)
-                    );
+                    this.selectedYear = selectedOption.value;
+                    this.loadDatasetForSelectedYear(selectedOption.value);
                 }}/>
                 <div className='LeaderboardContainer'>
                     <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
@@ -177,6 +214,7 @@ class App extends React.Component {
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
                     this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => {return {'value': a, 'label': a}}) });
                 }} />
+                <StatChart stats={chartStats}></StatChart>
             </div>
         );
     }
