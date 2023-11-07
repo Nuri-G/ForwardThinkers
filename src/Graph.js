@@ -159,7 +159,10 @@ class Graph extends React.Component {
                 tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
                 tooltip.style.position = 'absolute';
                 tooltip.style.userSelect = 'none';
-                
+                tooltip.style.backgroundColor = 'rgb(255, 255, 255)';
+                tooltip.style.border = '1.5px solid rgb(0, 0, 0)'; // Set a 1px solid black border
+                tooltip.style.padding = '5px'
+
                 const offsetX = 10; // Adjust this value as needed for spacing
                 
                 // Since you need the height, you have to set the tooltip into the document
