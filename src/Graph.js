@@ -50,20 +50,46 @@ class Graph extends React.Component {
     }
 
     minX() {
-        return Math.min(...this.activeDataX()) - 1;
+        return Math.min(...this.activeDataX());
     }
 
     minY() {
-        return Math.min(...this.activeDataY()) - 1;
+        return Math.min(...this.activeDataY());
     }
 
     maxX() {
-        return Math.max(...this.activeDataX()) + 1;
+        return Math.max(...this.activeDataX());
     }
 
     maxY() {
-        return Math.max(...this.activeDataY()) + 1;
+        return Math.max(...this.activeDataY());
     }
+
+    renderXAxisLabel() {
+        const xLabel = this.props.xAxis; // Assuming this is the selected label for X axis
+        const margin = 5;
+        const xLabelX = (this.props.width + margin)/ 2;
+        const xLabelY = this.props.height + margin-2;
+
+        return (
+            <text x={xLabelX} y={xLabelY} textAnchor="middle" fontSize="2">
+                {xLabel}
+            </text>
+        );
+    }
+    renderYAxisLabel() {
+        const yLabel = this.props.yAxis; // Assuming this is the selected label for Y axis
+        const margin = 5;
+        const yLabelX = -2;
+        const yLabelY = (this.props.height + margin) / 2;
+
+        return (
+            <text x={yLabelX} y={yLabelY} textAnchor="end" fontSize="2" transform={`rotate(-90, ${yLabelX}, ${yLabelY})`}>
+                {yLabel}
+            </text>
+        );
+    }
+
 
     createChart() {
         const dataPoints = this.props.activeData.map((line, i) => {
@@ -277,11 +303,17 @@ class Graph extends React.Component {
     }
 
     render() {
+        const margin = 5;
+        const viewBoxWidth = this.props.width + margin * 2;
+        const viewBoxHeight = this.props.height + margin * 2;
+
         return ( //This box might need to be bigger as well, or we just make circles smaller
-            <svg viewBox={'0 0 ' + this.props.width + ' ' + this.props.height} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px', zIndex: '2'}}>
+        <svg viewBox={`-${margin} -${margin} ${viewBoxWidth} ${viewBoxHeight}`} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px', zIndex: '2' }}>
                 {this.createChart()}
                 {this.renderXAxis()}
                 {this.renderYAxis()}
+                {this.renderXAxisLabel()}
+                {this.renderYAxisLabel()}
             </svg>
         );
     }
