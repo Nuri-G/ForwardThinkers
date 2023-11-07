@@ -124,24 +124,27 @@ class Graph extends React.Component {
                             imageUrl: this.props.teamInfo[player.Squad].logoUrl,
                             imageHeight: 100,
                             showCloseButton: true,
-                            showCancelButton: !isPreviousDisabled,
+                            showDenyButton: !isPreviousDisabled,
                             showConfirmButton: !isNextDisabled,
                             confirmButtonText: 'Next',
-                            cancelButtonText: 'Previous',
-                            cancelButtonColor: '#7066e0',
+                            denyButtonText: 'Previous',
+                            denyButtonColor: '#7066e0',
                             footer: `Showing: ${index + 1} of ${group.length}`,
                             customClass: {
                                 actions: 'my-actions',
-                                cancelButton: 'order-1',
+                                denyButton: 'order-1',
                                 confirmButton: 'order-2'
                             }
                         }).then((result) => {
+                            console.log(result);
                             if (result.isConfirmed) {
-                                swal.close(); // Close the current modal
+                                swal.close();
                                 showModal(index + 1);
-                            } else {
-                                swal.close(); // Close the current modal
+                            } else if (result.isDenied) {
+                                swal.close();
                                 showModal(index - 1);
+                            } else {
+                                swal.close();
                             }
                         });
                     }
