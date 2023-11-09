@@ -42,11 +42,19 @@ class Graph extends React.Component {
     averageX() {
         let data = this.activeDataX();
 
+        if(data === null || data.length === 0) {
+            return 0;
+        }
+
         return data.reduce((acc, val) => Number(acc) + Number(val)) / data.length;
     }
 
     averageY() {
         let data = this.activeDataY();
+
+        if(data === null || data.length === 0) {
+            return 0;
+        }
 
         return data.reduce((acc, val) => Number(acc) + Number(val)) / data.length;
     }
