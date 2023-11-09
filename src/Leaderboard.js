@@ -71,18 +71,11 @@ class Leaderboard extends React.Component {
             columns={columns}
             sortingOrder={['desc', 'asc']}
             initialState={{
-                pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
-                },
-                sorting: {
-                sortModel: [
-                    {
-                    field: 'goals',
-                    sort: 'desc',
-                    },
-                ],
-                },
+                pagination: {paginationModel: { page: 0, pageSize: 10 },},
+                sorting: {sortModel: [{field: 'goals',sort: 'desc',},],},
             }}
+
+            
             pageSizeOptions={[5, 10]}
             />)
     }
