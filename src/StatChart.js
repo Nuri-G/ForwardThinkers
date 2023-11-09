@@ -67,7 +67,7 @@ class StatChart extends React.Component {
     render() {
         let polys = polygons(this.props.stats);
 
-        return (<svg viewBox={'0 0 1000 1000'} style={{backgroundColor: '#55ddff', borderRadius: '10px'}}>
+        return (<svg viewBox={'0 0 1000 1000'} style={{backgroundColor: '#FFFFFF', borderRadius: '10px'}}>
             <polygon
                 points={coordString(polys.inner)}
                 fill='#ff6666'
@@ -75,14 +75,14 @@ class StatChart extends React.Component {
             />
             <polygon
                 points={coordString(polys.outer)}
-                style={{fill:'none', stroke:'white', strokeWidth:1}}
+                style={{fill:'none', stroke:'black', strokeWidth:1}}
             />
             <polygon points={coordString(polys.center)}></polygon>
             {polys.outer.map(coord => {
                 return (<line x1='500' y1='500' x2={coord.x} y2={coord.y} stroke='#333333' style={{strokeWidth: 1, strokeDasharray: [10, 5]}}></line>)
             })}
             {polys.outer.map(coord => {
-                return (<text x={coord.x} y={coord.y + 10} stroke='none' fontSize={26} style={{textAnchor: 'middle', fill: 'white', stroke: 'none'}}>{coord.name}</text>)
+                return (<text x={coord.x} y={coord.y + 10} stroke='none' fontSize={26} style={{textAnchor: 'middle', fill: 'black', stroke: 'none'}}>{coord.name}</text>)
             })}
             {polys.scaleMarkers.map(polyCoords => {
                 return (<polygon points={coordString(polyCoords)} fill='none' stroke='#333333'></polygon>)
