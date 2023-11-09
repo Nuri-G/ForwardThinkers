@@ -69,10 +69,11 @@ class Leaderboard extends React.Component {
         return (<DataGrid
             rows={gridRows}
             columns={columns}
+            
             sortingOrder={['desc', 'asc']}
             initialState={{
                 pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+                paginationModel: { page: 0, pageSize: 12 },
                 },
                 sorting: {
                 sortModel: [
