@@ -101,11 +101,10 @@ class Graph extends React.Component {
             const x = coords.x;
             const y = coords.y;
             let color = this.props.teamInfo[player.Squad].color;
+            let active = this.props.teamInfo[player.Squad].active;
             if(color == null) {
                 color = 'red';
             }
-
-           // console.log(this.props.teamInfo[player.Squad].color)
 
             return {
                 stats: line,
@@ -113,13 +112,23 @@ class Graph extends React.Component {
                 y: y,
                 color: color,
                 xAxisValue: performance[this.props.xAxis],
-                yAxisValue: performance[this.props.yAxis]
+                yAxisValue: performance[this.props.yAxis],
+                active: active
             };
         });
 
         // Create an object to store data points with the same (x, y) coordinates
         const overlappingDataPoints = {};
 
+        dataPoints.sort((a, b) => {
+            if(a.active && b.active) {
+                return 0;
+            } else if(a.active) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
         // Iterate through the data points and group them by (x, y) coordinates
         dataPoints.forEach((dataPoint) => {
             if (dataPoint === null) return;

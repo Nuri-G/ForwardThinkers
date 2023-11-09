@@ -306,17 +306,14 @@ class App extends React.Component {
                     let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
                     this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
 
-                    // Revert the color of teams to their original colors
-                    for (const team of values) {
-                        if (team) {
-                            teamInfo[team.value].color = originalTeamColors[team.value].color;
-                        }
-                    }
-
                     // Change the color of unselected teams to gray
                     for (const team of Object.keys(teamInfo)) {
                         if (!activeTeams.has(team)) {
                             teamInfo[team].color = "#E0E0E0";
+                            teamInfo[team].active = false;
+                        } else {
+                            teamInfo[team].color = originalTeamColors[team].color;
+                            teamInfo[team].active = true;
                         }
                     }
 
