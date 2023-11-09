@@ -84,7 +84,14 @@ const columns = [
           <StripedDataGrid
             rows={gridRows}
             columns={columns}
+            
             sortingOrder={['desc', 'asc']}
+            initialState={{
+                pagination: {paginationModel: { page: 0, pageSize: 10 },},
+                sorting: {sortModel: [{field: 'goals',sort: 'desc',},],},
+            }}
+
+
             pageSizeOptions={[5, 10]}
             getRowClassName={(params) =>{
               if (params.indexRelativeToCurrentPage === 0) {
