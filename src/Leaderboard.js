@@ -80,7 +80,6 @@ const columns = [
                 redCards: Number(row.Performance.CrdR)}});
   
       return (
-        <div style={{ height: 400, width: '100%' }}>
           <StripedDataGrid
             rows={gridRows}
             columns={columns}
@@ -103,7 +102,6 @@ const columns = [
               }
             }}
           />
-        </div>
       );
     }
   }
