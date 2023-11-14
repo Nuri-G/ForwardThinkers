@@ -1,7 +1,13 @@
 .App {
+  /* display: flex; */
+  flex-direction: column; /* Stack children vertically */
   text-align: center;
   padding: 6px;
   margin: auto;
+}
+
+.FlexContainer {
+  display: flex;
 }
 
 .App-logo {
@@ -60,12 +66,20 @@
 }
 
 .LeaderboardContainer {
+  /* flex: 1; */
   width: 40%;
+  height: 100%;
   display: inline-block;
   vertical-align: top;
 }
 
 .GraphContainer {
+  /* flex: 2; */
   width: 60%;
   display: inline-block;
 }
+
+/* .DropdownMenu {
+  background-color: #7FFFD4;
+  color: #7FFFD4;
+} */

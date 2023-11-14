@@ -114,7 +114,8 @@ const teamInfo = {
 
 const originalTeamColors = {
     "Arsenal": {
-        color: "#EF0107" },
+        color: "#EF0107"
+    },
     "Aston Villa": {
         color: "#670E36"
     },
@@ -264,7 +265,7 @@ class App extends React.Component {
                 const mappedLabel = labelMappings[a] || a; // Use the mapping or fallback to the original label
                 return { 'value': a, 'label': mappedLabel };
             });
-    
+
             return (
                 <Select
                     className='Axis-Select'
@@ -280,7 +281,7 @@ class App extends React.Component {
             );
         }
     }
-    
+
 
     constructor() {
         super();
@@ -288,7 +289,7 @@ class App extends React.Component {
         this.data = null;
         this.loading = false;
         this.selectedYear = "2022-2023";
-        this.state = {activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: []};
+        this.state = { activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: [] };
     }
 
     render() {
@@ -309,44 +310,47 @@ class App extends React.Component {
 
         return (
             <div className="App">
-                <Select placeholder = "Select Year..."
-                value={{value: this.selectedYear, label: 'Selected Year: ' + this.selectedYear}}
-                options={yearOptions}
-                onChange={(selectedOption) => {
-                    this.selectedYear = selectedOption.value;
-                    this.loadDatasetForSelectedYear(selectedOption.value);
-                }}/>
-                <div className='LeaderboardContainer'>
-                    <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
-                </div>
-                <div className='GraphContainer' onClick={this.props.onCLick}>
-                    {this.createDropdown("xAxis")}
-                    {this.createDropdown("yAxis")}
-                    <Graph activeData={this.data} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo} width={100} height={79}></Graph>
-                </div>
-                <Select placeholder="Filter Teams..." isMulti value={this.state.activeTeams} options={dropdownTeamOptions} onChange={(values, labels) => {
-                    let activeTeams = new Set(values.map(a => a.value));
-                    let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
-                    this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
+                <Select className="DropdownMenu" placeholder="Select Year..."
+                    value={{ value: this.selectedYear, label: 'Selected Year: ' + this.selectedYear }}
+                    options={yearOptions}
+                    onChange={(selectedOption) => {
+                        this.selectedYear = selectedOption.value;
+                        this.loadDatasetForSelectedYear(selectedOption.value);
+                    }} />
+                <div className="FlexContainer">
+                    <div className='LeaderboardContainer'>
+                        <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
 
-                    // Change the color of unselected teams to gray
-                    for (const team of Object.keys(teamInfo)) {
-                        if (!activeTeams.has(team)) {
-                            teamInfo[team].color = "#E0E0E0";
-                            teamInfo[team].active = false;
-                        } else {
-                            teamInfo[team].color = originalTeamColors[team].color;
-                            teamInfo[team].active = true;
-                        }
-                    }
+                        <Select placeholder="Filter Teams..." isMulti value={this.state.activeTeams} options={dropdownTeamOptions} onChange={(values, labels) => {
+                            let activeTeams = new Set(values.map(a => a.value));
+                            let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
+                            this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
 
-                    // Revert all teams colors when no filter is applied
-                    if (values.length === 0) {
-                        for (const team of Object.keys(teamInfo)) {
-                            teamInfo[team].color = originalTeamColors[team].color;
-                        }
-                    }
-                }} />
+                            // Change the color of unselected teams to gray
+                            for (const team of Object.keys(teamInfo)) {
+                                if (!activeTeams.has(team)) {
+                                    teamInfo[team].color = "#E0E0E0";
+                                    teamInfo[team].active = false;
+                                } else {
+                                    teamInfo[team].color = originalTeamColors[team].color;
+                                    teamInfo[team].active = true;
+                                }
+                            }
+
+                            // Revert all teams colors when no filter is applied
+                            if (values.length === 0) {
+                                for (const team of Object.keys(teamInfo)) {
+                                    teamInfo[team].color = originalTeamColors[team].color;
+                                }
+                            }
+                        }} />
+                    </div>
+                    <div className='GraphContainer' onClick={this.props.onCLick}>
+                        {this.createDropdown("xAxis")}
+                        {this.createDropdown("yAxis")}
+                        <Graph activeData={this.data} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo} width={100} height={79}></Graph>
+                    </div>
+                </div>
             </div>
         );
     }
