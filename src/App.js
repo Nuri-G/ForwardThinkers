@@ -192,6 +192,17 @@ const originalTeamColors = {
     }
 }
 
+const labelMappings = {
+    'Gls': 'Goals',
+    'Ast': 'Assists',
+    'G+A': 'Goals + Assists',
+    'G-PK': 'Goals - Penalty Kicks',
+    'PK': 'Penalty Kicks',
+    'PKatt': 'Penalties Attempted',
+    'CrdY': 'Yellow Cards',
+    'CrdR': 'Red Cards'
+};
+
 const yearOptions = [{ value: "2019-2020", label: "2019-2020" },
 { value: "2020-2021", label: "2020-2021" }, { value: "2021-2022", label: "2021-2022" },
 { value: "2022-2023", label: "2022-2023" }, { value: "2023-2024", label: "2023-2024" }]
@@ -249,15 +260,27 @@ class App extends React.Component {
     createDropdown(axis) {
         if (this.state != null && this.state.activeData != null && this.state.activeData.length > 0) {
             let labels = Object.keys(this.state.activeData[0]['Performance']);
-            let options = [...labels].map(a => { return { 'value': a, 'label': a } });
-
-            return (<Select className='Axis-Select' value={{ value: this.state[axis], label: axis + ": " + this.state[axis] }} placeholder={"Select the " + axis} options={options} onChange={(value, label) => {
-                let state = this.state;
-                state[axis] = value.value;
-                this.setState(state);
-            }} />)
+            let options = [...labels].map(a => {
+                const mappedLabel = labelMappings[a] || a; // Use the mapping or fallback to the original label
+                return { 'value': a, 'label': mappedLabel };
+            });
+    
+            return (
+                <Select
+                    className='Axis-Select'
+                    value={{ value: this.state[axis], label: labelMappings[this.state[axis]] || this.state[axis] }}
+                    placeholder={"Select the " + axis}
+                    options={options}
+                    onChange={(value, label) => {
+                        let state = this.state;
+                        state[axis] = value.value;
+                        this.setState(state);
+                    }}
+                />
+            );
         }
     }
+    
 
     constructor() {
         super();

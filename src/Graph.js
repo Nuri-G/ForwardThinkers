@@ -3,6 +3,18 @@ import swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import StatChart from './StatChart';
 
+const labelMappings = {
+    'Gls': 'Goals',
+    'Ast': 'Assists',
+    'G+A': 'Goals + Assists',
+    'G-PK': 'Goals - Penalty Kicks',
+    'PK': 'Penalty Kicks',
+    'PKatt': 'Penalties Attempted',
+    'CrdY': 'Yellow Cards',
+    'CrdR': 'Red Cards'
+};
+
+
 function hexagonCoords(x, y, radius) {
     let angle = 0;
     let out = '';
@@ -42,7 +54,7 @@ class Graph extends React.Component {
     averageX() {
         let data = this.activeDataX();
 
-        if(data === null || data.length === 0) {
+        if (data === null || data.length === 0) {
             return 0;
         }
 
@@ -52,7 +64,7 @@ class Graph extends React.Component {
     averageY() {
         let data = this.activeDataY();
 
-        if(data === null || data.length === 0) {
+        if (data === null || data.length === 0) {
             return 0;
         }
 
@@ -77,25 +89,27 @@ class Graph extends React.Component {
 
     renderXAxisLabel() {
         const xLabel = this.props.xAxis; // Assuming this is the selected label for X axis
+        const displayLabel = labelMappings[xLabel] || xLabel;
         const margin = 5;
-        const xLabelX = (this.props.width + margin)/ 2;
-        const xLabelY = this.props.height + margin-2;
+        const xLabelX = (this.props.width + margin) / 2;
+        const xLabelY = this.props.height + margin - 2;
 
         return (
             <text x={xLabelX} y={xLabelY} textAnchor="middle" fontSize="2">
-                {xLabel}
+                {displayLabel}
             </text>
         );
     }
     renderYAxisLabel() {
         const yLabel = this.props.yAxis; // Assuming this is the selected label for Y axis
+        const displayLabel = labelMappings[yLabel] || yLabel;
         const margin = 5;
         const yLabelX = -2;
         const yLabelY = (this.props.height + margin) / 2;
 
         return (
             <text x={yLabelX} y={yLabelY} textAnchor="end" fontSize="2" transform={`rotate(-90, ${yLabelX}, ${yLabelY})`}>
-                {yLabel}
+                {displayLabel}
             </text>
         );
     }
@@ -110,7 +124,7 @@ class Graph extends React.Component {
             const y = coords.y;
             let color = this.props.teamInfo[player.Squad].color;
             let active = this.props.teamInfo[player.Squad].active;
-            if(color == null) {
+            if (color == null) {
                 color = 'red';
             }
 
@@ -129,9 +143,9 @@ class Graph extends React.Component {
         const overlappingDataPoints = {};
 
         dataPoints.sort((a, b) => {
-            if(a.active && b.active) {
+            if (a.active && b.active) {
                 return 0;
-            } else if(a.active) {
+            } else if (a.active) {
                 return -1;
             } else {
                 return 1;
@@ -238,7 +252,7 @@ class Graph extends React.Component {
             const handleHover = (e) => {
                 const tooltip = document.createElement('div');
                 tooltip.className = 'tooltip';
-                tooltip.innerHTML = `${player.Player}<br />Team: ${player.Squad}<br />Goals: ${xAxisValue}<br />Assists: ${yAxisValue}`;
+                tooltip.innerHTML = `<strong>${player.Player}</strong><br /><em>${player.Squad}</em><br />${labelMappings[this.props.xAxis]}: ${xAxisValue}<br />${labelMappings[this.props.yAxis]}: ${yAxisValue}`;
                 tooltip.style.position = 'absolute';
                 tooltip.style.userSelect = 'none';
                 tooltip.style.backgroundColor = 'rgb(255, 255, 255)';
@@ -246,37 +260,37 @@ class Graph extends React.Component {
                 tooltip.style.padding = '5px'
 
                 const offsetX = 10; // Adjust this value as needed for spacing
-                
+
                 // Since you need the height, you have to set the tooltip into the document
                 // temporarily to measure the height
                 document.body.appendChild(tooltip);
                 const tooltipWidth = tooltip.offsetWidth;
                 const tooltipHeight = tooltip.offsetHeight;
                 document.body.removeChild(tooltip); // Remove it after measurement
-                
+
                 // Calculate the positions
                 let leftPosition = e.pageX + offsetX;
                 let topPosition = e.pageY + offsetX;
-                
+
                 // Adjust positions if tooltip goes beyond window boundaries
                 if (leftPosition + tooltipWidth > window.innerWidth) {
                     leftPosition = window.innerWidth - tooltipWidth - offsetX;
                 }
-                
+
                 if (topPosition + tooltipHeight > window.innerHeight) {
                     topPosition = window.innerHeight - tooltipHeight - offsetX;
                 }
-                
+
                 tooltip.style.left = leftPosition + 'px';
                 tooltip.style.top = topPosition + 'px'; // Correct 'py' typo
-                
+
                 document.body.appendChild(tooltip);
-                
+
                 const handleMouseLeave = () => {
                     document.body.removeChild(tooltip);
                     e.target.removeEventListener('mouseleave', handleMouseLeave);
                 };
-                
+
                 e.target.addEventListener('mouseleave', handleMouseLeave);
             };
 
@@ -364,7 +378,7 @@ class Graph extends React.Component {
         const viewBoxHeight = this.props.height + margin * 2;
 
         return ( //This box might need to be bigger as well, or we just make circles smaller
-        <svg viewBox={`-${margin} -${margin} ${viewBoxWidth} ${viewBoxHeight}`} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px', zIndex: '2' }}>
+            <svg viewBox={`-${margin} -${margin} ${viewBoxWidth} ${viewBoxHeight}`} style={{ border: '1px solid lightgrey', borderRadius: '5px', marginTop: '2px', zIndex: '2' }}>
                 {this.createChart()}
                 {this.renderXAxis()}
                 {this.renderYAxis()}
