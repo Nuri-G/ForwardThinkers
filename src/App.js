@@ -59,7 +59,7 @@ const teamInfo = {
         color: "#97c1e7"
     },
     "Manchester Utd": {
-        logoUrl: "https://i.pinimg.com/originals/05/64/e2/0564e2514b9d8694cc8a34d04963e1a4.png",
+        logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/7/7a/Manchester_United_FC_crest.svg/1200px-Manchester_United_FC_crest.svg.png",
         color: "#da030e"
     },
     "Newcastle Utd": {
@@ -79,7 +79,7 @@ const teamInfo = {
         color: "#132257"
     },
     "West Ham": {
-        logoUrl: "https://static.vecteezy.com/system/resources/previews/026/135/477/original/west-ham-united-club-logo-black-symbol-premier-league-football-abstract-design-illustration-free-vector.jpg",
+        logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/c/c2/West_Ham_United_FC_logo.svg/640px-West_Ham_United_FC_logo.svg.png",
         color: "#7c2c3b"
     },
     "Wolves": {
