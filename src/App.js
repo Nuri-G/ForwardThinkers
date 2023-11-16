@@ -210,17 +210,14 @@ const yearOptions = [{ value: "2019-2020", label: "2019-2020" },
 
 async function fetchFile(filename) {
     const response = await fetch(filename);
-    const reader = response.body.getReader();
-    const result = await reader.read();
-    const decoder = new TextDecoder('utf-8');
-    const text = decoder.decode(result.value);
-    return text;
+    return await  response.text();
 }
 
 class App extends React.Component {
     loadDataset(filename) {
         fetchFile(filename).then(text => {
-            let data = Papa.parse(text).data;
+            let p = Papa.parse(text)
+            let data = p.data;
             let categories = data[0];
             data.shift();
             let subcategories = data[0];
@@ -254,7 +251,7 @@ class App extends React.Component {
     }
 
     loadDatasetForSelectedYear() {
-        const filename = `./data/${this.selectedYear}.csv`;
+        const filename = `./data/${this.state.selectedYear}.csv`;
         this.loadDataset(filename);
     }
 
@@ -309,17 +306,22 @@ class App extends React.Component {
 
         this.data = null;
         this.loading = false;
-        this.selectedYear = "2022-2023";
-        this.state = { activeData: null, xAxis: 'Gls', yAxis: 'Ast', activeTeams: [] };
+        this.state = { activeData: null, selectedYear: "2022-2023", xAxis: 'Gls', yAxis: 'Ast', activeTeams: [] };
+    }
+
+    componentDidMount() {
+        this.loadDatasetForSelectedYear();
+    }
+
+    componentDidUpdate() {
+        if(!this.loading) {
+            this.loadDatasetForSelectedYear();
+            this.loading = true;
+        }
     }
 
     render() {
-        if (!this.loading) {
-            this.loading = true;
-            this.loadDatasetForSelectedYear();
-        }
-
-        if (this.state.activeData == null) {
+        if (this.state.activeData == null || !this.loading) {
             return <p>Loading...</p>
         }
 
@@ -334,11 +336,11 @@ class App extends React.Component {
         return (
             <div className="App">
                 <Select className="DropdownMenu" placeholder="Select Year..."
-                    value={{ value: this.selectedYear, label: 'Selected Year: ' + this.selectedYear }}
+                    value={{ value: this.state.selectedYear, label: 'Selected Year: ' + this.state.selectedYear }}
                     options={yearOptions}
                     onChange={(selectedOption) => {
-                        this.selectedYear = selectedOption.value;
-                        this.loadDatasetForSelectedYear(selectedOption.value);
+                        this.loading = false;
+                        this.setState({...this.state, selectedYear: selectedOption.value})
                     }} />
                 <div className="FlexContainer">
                     <div className='LeaderboardContainer'>
