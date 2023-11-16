@@ -282,6 +282,27 @@ class App extends React.Component {
         }
     }
 
+    setTeamColors(activeTeams) {
+        activeTeams = new Set(activeTeams.map(a => a.value));
+        // Revert all teams colors when no filter is applied
+        if (activeTeams.size === 0) {
+            for (const team of Object.keys(teamInfo)) {
+                teamInfo[team].color = originalTeamColors[team].color;
+            }
+        } else {
+            // Change the color of unselected teams to gray
+            for (const team of Object.keys(teamInfo)) {
+                if (!activeTeams.has(team)) {
+                    teamInfo[team].color = "#E0E0E0";
+                    teamInfo[team].active = false;
+                } else {
+                    teamInfo[team].color = originalTeamColors[team].color;
+                    teamInfo[team].active = true;
+                }
+            }
+        }
+    }
+
 
     constructor() {
         super();
@@ -308,6 +329,8 @@ class App extends React.Component {
         }
         dropdownTeamOptions = [...dropdownTeamOptions].map(a => { return { 'value': a, 'label': a } });
 
+        this.setTeamColors(this.state.activeTeams);
+
         return (
             <div className="App">
                 <Select className="DropdownMenu" placeholder="Select Year..."
@@ -325,24 +348,6 @@ class App extends React.Component {
                             let activeTeams = new Set(values.map(a => a.value));
                             let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
                             this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
-
-                            // Change the color of unselected teams to gray
-                            for (const team of Object.keys(teamInfo)) {
-                                if (!activeTeams.has(team)) {
-                                    teamInfo[team].color = "#E0E0E0";
-                                    teamInfo[team].active = false;
-                                } else {
-                                    teamInfo[team].color = originalTeamColors[team].color;
-                                    teamInfo[team].active = true;
-                                }
-                            }
-
-                            // Revert all teams colors when no filter is applied
-                            if (values.length === 0) {
-                                for (const team of Object.keys(teamInfo)) {
-                                    teamInfo[team].color = originalTeamColors[team].color;
-                                }
-                            }
                         }} />
                     </div>
                     <div className='GraphContainer' onClick={this.props.onCLick}>
