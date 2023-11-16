@@ -321,7 +321,7 @@ class App extends React.Component {
     }
 
     render() {
-        if (this.state.activeData == null || !this.loading) {
+        if (this.state.activeData == null) {
             return <p>Loading...</p>
         }
 
