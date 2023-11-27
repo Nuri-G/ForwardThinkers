@@ -463,8 +463,8 @@ class App extends React.Component {
                             <Button
                                 variant="contained"
                                 onClick={this.handleButtonClick}
-                                style={{ marginTop: "10px", marginBottom: "10px", width: "100%" }}
-                            >Compare Players
+                                style={{ marginTop: "10px", marginBottom: "10px", width: "100%" , paddingRight: "57px" }}
+                            >Compare PlayerS
                             </Button>
 
                         </div>
