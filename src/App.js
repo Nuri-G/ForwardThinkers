@@ -4,6 +4,9 @@ import Papa from "papaparse";
 import Select from 'react-select';
 import Graph from './Graph'
 import Leaderboard from './Leaderboard'
+import swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import StatChart from './StatChart';
 
 const teamInfo = {
     "Arsenal": {
@@ -321,6 +324,70 @@ class App extends React.Component {
         }
     }
 
+    handleButtonClick = (e) => {
+
+
+        let currentPlayer = this.data.find(element => {return element.Player.Player === this.selectedPlayer1.value;});
+        let currentPlayer1 = this.data.find(element => {return element.Player.Player === this.selectedPlayer2.value;});
+
+        const showModal = () => {
+            if (currentPlayer) {
+                let player = currentPlayer.Player;
+                let player1 = currentPlayer1.Player;
+                let chartStats = [{
+                    name: 'Goals',
+                    minValue: 0,
+                    maxValue: Math.max(...this.data.map(a => a.Performance.Gls)),
+                    value: currentPlayer.Performance.Gls,
+                    value1: currentPlayer1.Performance.Gls
+                },
+                {
+                    name: 'Assists',
+                    minValue: 0,
+                    maxValue: Math.max(...this.data.map(a => a.Performance.Ast)),
+                    value: currentPlayer.Performance.Ast,
+                    value1: currentPlayer1.Performance.Ast
+                },
+                {
+                    name: 'Minutes Played',
+                    minValue: 0,
+                    maxValue: Math.max(...this.data.map(a => Number(a['Playing Time'].Min.replace(',', '')))),
+                    value: Number(currentPlayer['Playing Time'].Min.replace(',', '')),
+                    value1: Number(currentPlayer1['Playing Time'].Min.replace(',', '')),
+                },
+                {
+                    name: 'Expected Goals',
+                    minValue: 0,
+                    maxValue: Math.max(...this.data.map(a => a['Expected'].xG)),
+                    value: currentPlayer['Expected'].xG,
+                    value1: currentPlayer1['Expected'].xG,
+                },
+                {
+                    name: 'Progressive Carries',
+                    minValue: 0,
+                    maxValue: Math.max(...this.data.map(a => a['Progression'].PrgC)),
+                    value: currentPlayer['Progression'].PrgC,
+                    value1: currentPlayer1['Progression'].PrgC,
+                },
+                {
+                    name: 'Progressive Passes',
+                    minValue: 0,
+                    maxValue: Math.max(...this.data.map(a => a['Progression'].PrgP)),
+                    value: currentPlayer['Progression'].PrgP,
+                    value1: currentPlayer1['Progression'].PrgP,
+                }];
+
+                withReactContent(swal).fire({
+                    title: player.Player + " and " + player1.Player,
+                    html: (<StatChart stats={chartStats}></StatChart>),
+                });
+            }
+        };
+
+        showModal();
+    };
+
+
     render() {
         if (this.state.activeData == null) {
             return <p>Loading...</p>
@@ -367,7 +434,7 @@ class App extends React.Component {
                                 value={this.state.selectedPlayer1}
                                 options={dropdownPlayerOptions}
                                 onChange={(selectedOption) => {
-                                    this.setState({ ...this.state, selectedPlayer1: selectedOption });
+                                    this.selectedPlayer1 = selectedOption;
                                 }}
                             />
                             <Select
@@ -376,9 +443,12 @@ class App extends React.Component {
                                 value={this.state.selectedPlayer2}
                                 options={dropdownPlayerOptions}
                                 onChange={(selectedOption) => {
-                                    this.setState({ ...this.state, selectedPlayer2: selectedOption });
+                                    this.selectedPlayer2 = selectedOption;
                                 }}
                             />
+                            <div className='ButtonContainer'>
+                                <button onClick={this.handleButtonClick}>Compare Players</button>
+                            </div>
                     </div>
                     <div className='GraphContainer' onClick={this.props.onCLick}>
                         {this.createDropdown("xAxis")}
