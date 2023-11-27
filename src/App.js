@@ -459,9 +459,14 @@ class App extends React.Component {
                                     this.selectedPlayer2 = selectedOption;
                                 }}
                             />
-                            <div className='ButtonContainer' style={{ marginTop: "10px", marginBottom: "10px" }}>
-                                <Button variant="contained" onClick={this.handleButtonClick}>Compare Players</Button>
-                            </div>
+
+                            <Button
+                                variant="contained"
+                                onClick={this.handleButtonClick}
+                                style={{ marginTop: "10px", marginBottom: "10px", width: "100%" }}
+                            >Compare Players
+                            </Button>
+
                         </div>
                     </div>
 
