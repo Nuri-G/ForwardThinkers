@@ -414,21 +414,27 @@ class App extends React.Component {
 
         return (
             <div className="App">
-                <Select className="DropdownMenu" placeholder="Select Year..."
-                    value={{ value: this.state.selectedYear, label: 'Selected Year: ' + this.state.selectedYear }}
-                    options={yearOptions}
-                    onChange={(selectedOption) => {
-                        this.loading = false;
-                        this.setState({ ...this.state, selectedYear: selectedOption.value })
-                    }} />
-                <div className="FlexContainer">
-                    <div className='LeaderboardContainer'>
 
-                        <Select placeholder="Filter Teams..." isMulti value={this.state.activeTeams} options={dropdownTeamOptions} onChange={(values, labels) => {
-                            let activeTeams = new Set(values.map(a => a.value));
-                            let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
-                            this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
+                <div className='FilterSelectionContainer' style={{ border: "3px solid lightgrey" }}>
+                    <Select className="DropdownMenu" placeholder="Select Year..."
+                        value={{ value: this.state.selectedYear, label: 'Selected Year: ' + this.state.selectedYear }}
+                        options={yearOptions}
+                        onChange={(selectedOption) => {
+                            this.loading = false;
+                            this.setState({ ...this.state, selectedYear: selectedOption.value })
                         }} />
+
+                    <Select placeholder="Filter Teams..." isMulti value={this.state.activeTeams} options={dropdownTeamOptions} onChange={(values, labels) => {
+                        let activeTeams = new Set(values.map(a => a.value));
+                        let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
+                        this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
+                    }} />
+
+                </div>
+                <br></br>
+
+                <div className="FlexContainer">
+                    <div className='LeaderboardContainer' >
 
                         <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
 
@@ -456,7 +462,7 @@ class App extends React.Component {
                         </div>
                     </div>
 
-                    <div style={{ border: "3px solid lightgrey" }} className='GraphContainer' onClick={this.props.onCLick}>
+                    <div className='GraphContainer' onClick={this.props.onCLick}>
                         {this.createDropdown("xAxis")}
                         {this.createDropdown("yAxis")}
 
