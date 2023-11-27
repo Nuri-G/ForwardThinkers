@@ -255,6 +255,7 @@ class App extends React.Component {
         this.loadDataset(filename);
     }
 
+    
     createDropdown(axis) {
         if (this.state != null && this.state.activeData != null && this.state.activeData.length > 0) {
             let labels = Object.keys(this.state.activeData[0]['Performance']);
@@ -325,6 +326,12 @@ class App extends React.Component {
             return <p>Loading...</p>
         }
 
+        let dropdownPlayerOptions = new Set();
+        for (let player of this.data) {
+            dropdownPlayerOptions.add(player.Player.Player);
+        }
+        dropdownPlayerOptions = [...dropdownPlayerOptions].map(a => { return { 'value': a, 'label': a } });
+        
         let dropdownTeamOptions = new Set();
         for (let player of this.data) {
             dropdownTeamOptions.add(player.Player.Squad);
@@ -332,6 +339,7 @@ class App extends React.Component {
         dropdownTeamOptions = [...dropdownTeamOptions].map(a => { return { 'value': a, 'label': a } });
 
         this.setTeamColors(this.state.activeTeams);
+
 
         return (
             <div className="App">
@@ -351,6 +359,26 @@ class App extends React.Component {
                             let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
                             this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
                         }} />
+                        
+
+                            <Select
+                                className='DropdownMenu'
+                                placeholder="Select Player 1..."
+                                value={this.state.selectedPlayer1}
+                                options={dropdownPlayerOptions}
+                                onChange={(selectedOption) => {
+                                    this.setState({ ...this.state, selectedPlayer1: selectedOption });
+                                }}
+                            />
+                            <Select
+                                className='DropdownMenu'
+                                placeholder="Select Player 2..."
+                                value={this.state.selectedPlayer2}
+                                options={dropdownPlayerOptions}
+                                onChange={(selectedOption) => {
+                                    this.setState({ ...this.state, selectedPlayer2: selectedOption });
+                                }}
+                            />
                     </div>
                     <div className='GraphContainer' onClick={this.props.onCLick}>
                         {this.createDropdown("xAxis")}
