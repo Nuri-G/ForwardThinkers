@@ -378,7 +378,11 @@ class App extends React.Component {
                 }];
 
                 withReactContent(swal).fire({
-                    title: player.Player + " and " + player1.Player,
+                    title: (<div>
+                        <p style={{color: 'red'}}>{player.Player}</p>
+                        <p style={{marginTop: '-30px'}}>vs.</p>
+                        <p style={{color: 'green', marginTop: '-30px'}}>{player1.Player}</p>
+                    </div>),
                     html: (<StatChart stats={chartStats}></StatChart>),
                 });
             }
