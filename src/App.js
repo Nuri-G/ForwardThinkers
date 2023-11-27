@@ -213,7 +213,7 @@ const yearOptions = [{ value: "2019-2020", label: "2019-2020" },
 
 async function fetchFile(filename) {
     const response = await fetch(filename);
-    return await  response.text();
+    return await response.text();
 }
 
 class App extends React.Component {
@@ -258,7 +258,7 @@ class App extends React.Component {
         this.loadDataset(filename);
     }
 
-    
+
     createDropdown(axis) {
         if (this.state != null && this.state.activeData != null && this.state.activeData.length > 0) {
             let labels = Object.keys(this.state.activeData[0]['Performance']);
@@ -270,7 +270,7 @@ class App extends React.Component {
             return (
                 <Select
                     className='Axis-Select'
-                    value={{ value: this.state[axis], label: labelMappings[this.state[axis]] || this.state[axis] }}
+                    value={{ value: this.state[axis], label: axis + ": " + labelMappings[this.state[axis]] }}
                     placeholder={"Select the " + axis}
                     options={options}
                     onChange={(value, label) => {
@@ -318,7 +318,7 @@ class App extends React.Component {
     }
 
     componentDidUpdate() {
-        if(!this.loading) {
+        if (!this.loading) {
             this.loadDatasetForSelectedYear();
             this.loading = true;
         }
@@ -327,8 +327,8 @@ class App extends React.Component {
     handleButtonClick = (e) => {
 
 
-        let currentPlayer = this.data.find(element => {return element.Player.Player === this.selectedPlayer1.value;});
-        let currentPlayer1 = this.data.find(element => {return element.Player.Player === this.selectedPlayer2.value;});
+        let currentPlayer = this.data.find(element => { return element.Player.Player === this.selectedPlayer1.value; });
+        let currentPlayer1 = this.data.find(element => { return element.Player.Player === this.selectedPlayer2.value; });
 
         const showModal = () => {
             if (currentPlayer) {
@@ -379,9 +379,9 @@ class App extends React.Component {
 
                 withReactContent(swal).fire({
                     title: (<div>
-                        <p style={{color: 'red'}}>{player.Player}</p>
-                        <p style={{marginTop: '-30px'}}>vs.</p>
-                        <p style={{color: 'green', marginTop: '-30px'}}>{player1.Player}</p>
+                        <p style={{ color: 'red' }}>{player.Player}</p>
+                        <p style={{ marginTop: '-30px' }}>vs.</p>
+                        <p style={{ color: 'green', marginTop: '-30px' }}>{player1.Player}</p>
                     </div>),
                     html: (<StatChart stats={chartStats}></StatChart>),
                 });
@@ -402,7 +402,7 @@ class App extends React.Component {
             dropdownPlayerOptions.add(player.Player.Player);
         }
         dropdownPlayerOptions = [...dropdownPlayerOptions].map(a => { return { 'value': a, 'label': a } });
-        
+
         let dropdownTeamOptions = new Set();
         for (let player of this.data) {
             dropdownTeamOptions.add(player.Player.Squad);
@@ -419,44 +419,47 @@ class App extends React.Component {
                     options={yearOptions}
                     onChange={(selectedOption) => {
                         this.loading = false;
-                        this.setState({...this.state, selectedYear: selectedOption.value})
+                        this.setState({ ...this.state, selectedYear: selectedOption.value })
                     }} />
                 <div className="FlexContainer">
                     <div className='LeaderboardContainer'>
-                        <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
 
                         <Select placeholder="Filter Teams..." isMulti value={this.state.activeTeams} options={dropdownTeamOptions} onChange={(values, labels) => {
                             let activeTeams = new Set(values.map(a => a.value));
                             let activeData = this.data.filter(player => activeTeams.size === 0 || activeTeams.has(player.Player.Squad));
                             this.setState({ ...this.state, activeData: activeData, activeTeams: [...activeTeams].map(a => { return { 'value': a, 'label': a } }) });
                         }} />
-                        
 
-                            <Select
-                                className='DropdownMenu'
-                                placeholder="Select Player 1..."
-                                value={this.state.selectedPlayer1}
-                                options={dropdownPlayerOptions}
-                                onChange={(selectedOption) => {
-                                    this.selectedPlayer1 = selectedOption;
-                                }}
-                            />
-                            <Select
-                                className='DropdownMenu'
-                                placeholder="Select Player 2..."
-                                value={this.state.selectedPlayer2}
-                                options={dropdownPlayerOptions}
-                                onChange={(selectedOption) => {
-                                    this.selectedPlayer2 = selectedOption;
-                                }}
-                            />
-                            <div className='ButtonContainer'>
-                                <button onClick={this.handleButtonClick}>Compare Players</button>
-                            </div>
+                        <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
+
+
+                        <Select
+                            className='DropdownMenu'
+                            placeholder="Select Player 1..."
+                            value={this.state.selectedPlayer1}
+                            options={dropdownPlayerOptions}
+                            onChange={(selectedOption) => {
+                                this.selectedPlayer1 = selectedOption;
+                            }}
+                        />
+                        <Select
+                            className='DropdownMenu'
+                            placeholder="Select Player 2..."
+                            value={this.state.selectedPlayer2}
+                            options={dropdownPlayerOptions}
+                            onChange={(selectedOption) => {
+                                this.selectedPlayer2 = selectedOption;
+                            }}
+                        />
+                        <div className='ButtonContainer'>
+                            <button onClick={this.handleButtonClick}>Compare Players</button>
+                        </div>
                     </div>
-                    <div className='GraphContainer' onClick={this.props.onCLick}>
+
+                    <div style={{ border: "3px solid lightgrey" }} className='GraphContainer' onClick={this.props.onCLick}>
                         {this.createDropdown("xAxis")}
                         {this.createDropdown("yAxis")}
+
                         <Graph activeData={this.data} xAxis={this.state.xAxis} yAxis={this.state.yAxis} teamInfo={teamInfo} width={100} height={79}></Graph>
                     </div>
                 </div>
