@@ -7,6 +7,7 @@ import Leaderboard from './Leaderboard'
 import swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import StatChart from './StatChart';
+import { Button } from '@mui/material';
 
 const teamInfo = {
     "Arsenal": {
@@ -438,27 +439,29 @@ class App extends React.Component {
 
                         <Leaderboard activeData={this.state.activeData} className='LeaderboardContainer'></Leaderboard>
 
-
-                        <Select
-                            className='DropdownMenu'
-                            placeholder="Select Player 1..."
-                            value={this.state.selectedPlayer1}
-                            options={dropdownPlayerOptions}
-                            onChange={(selectedOption) => {
-                                this.selectedPlayer1 = selectedOption;
-                            }}
-                        />
-                        <Select
-                            className='DropdownMenu'
-                            placeholder="Select Player 2..."
-                            value={this.state.selectedPlayer2}
-                            options={dropdownPlayerOptions}
-                            onChange={(selectedOption) => {
-                                this.selectedPlayer2 = selectedOption;
-                            }}
-                        />
-                        <div className='ButtonContainer'>
-                            <button onClick={this.handleButtonClick}>Compare Players</button>
+                        <br></br>
+                        <div style={{ border: "2px solid lightgrey" }}>
+                            <Select
+                                className='DropdownMenu'
+                                placeholder="Select Player 1..."
+                                value={this.state.selectedPlayer1}
+                                options={dropdownPlayerOptions}
+                                onChange={(selectedOption) => {
+                                    this.selectedPlayer1 = selectedOption;
+                                }}
+                            />
+                            <Select
+                                className='DropdownMenu'
+                                placeholder="Select Player 2..."
+                                value={this.state.selectedPlayer2}
+                                options={dropdownPlayerOptions}
+                                onChange={(selectedOption) => {
+                                    this.selectedPlayer2 = selectedOption;
+                                }}
+                            />
+                            <div className='ButtonContainer' style={{ marginTop: "10px", marginBottom: "10px" }}>
+                                <Button variant="contained" onClick={this.handleButtonClick}>Compare Players</Button>
+                            </div>
                         </div>
                     </div>
 
