@@ -1,2 +1,2 @@
 # Premier League Player Stats Visualizer
-Project is hosted at https://www.forwardthinkers.info/
+https://nuri-g.github.io/ForwardThinkers/
